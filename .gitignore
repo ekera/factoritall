@@ -1,0 +1,4 @@
+# Hidden files
+.DS_Store
+
+/__pycache__
