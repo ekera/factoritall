@@ -65,7 +65,7 @@ Finally, it will call the solver for <img src="https://render.githubusercontent.
 To test the factoring algorithm by simulating order finding heuristically, execute:
 
 ```console
-sage: test_heuristic_of_random_pi(l = 1024, n = 2, e_max = 1, c = 1)
+sage: test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1)
 ```
 
 This function will first select <img src="https://render.githubusercontent.com/render/math?math=n"> distinct prime numbers <img src="https://render.githubusercontent.com/render/math?math=p_i"> uniformly at random from <img src="https://render.githubusercontent.com/render/math?math=[3, 2^{\ell})">,
