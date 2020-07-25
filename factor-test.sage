@@ -17,7 +17,7 @@ from timer import Timer;
 # 
 # Finally, it will call the solver for r and N passing along the constant c.
 def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1, \
-  Bs = 10^6, sanity_check = True):
+  Bs = 10^6, sanity_check = False):
 
   # Supporting function to select a prime uniformly at random from [2, 2^l).
   def generate_prime(l):
