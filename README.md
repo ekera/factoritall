@@ -6,7 +6,7 @@ The classical algorithm required for this step is essentially due to Miller [[Mi
 
 This repository contains a [Sage](https://www.sagemath.org) script [<code>factor.sage</code>](factor.sage) that implements the factoring algorithm described in [[E20]](http://arxiv.org/pdf/2007.10044.pdf).
 
-For test purposes, it furthermore contains a script [<code>factor-test.sage</code>](factor-test.sage) that implements order finding: Given the factorization of <img src="https://render.githubusercontent.com/render/math?math=N">, and an element <img src="https://render.githubusercontent.com/render/math?math=g \in \mathbb Z_N^*">, it yields either the exact order of <img src="https://render.githubusercontent.com/render/math?math=g">, or an heuristic approximation of the order of <img src="https://render.githubusercontent.com/render/math?math=g"> that is correct with very high probability. The heuristic order finding simulator is described in further detail in Appendix A of [[E20]](http://arxiv.org/pdf/2007.10044.pdf).
+For test purposes, it furthermore contains a script [<code>factor-test.sage</code>](factor-test.sage) that implements order finding: Given the factorization of <img src="https://render.githubusercontent.com/render/math?math=N">, and an element <img src="https://render.githubusercontent.com/render/math?math=g \in \mathbb Z_N^*">, it yields either the exact order <img src="https://render.githubusercontent.com/render/math?math=r"> of <img src="https://render.githubusercontent.com/render/math?math=g">, or an heuristic approximation of <img src="https://render.githubusercontent.com/render/math?math=r"> that is correct with very high probability. The heuristic order finding simulator is described in further detail in Appendix A of [[E20]](http://arxiv.org/pdf/2007.10044.pdf).
 
 Note that the aformentioned scripts were developed for academic research purposes. They grew out of our research project in an organic manner as research questions were posed and answered. They are distributed "as is" without warranty of any kind, either expressed or implied. For further details on the terms of use, see the [license](LICENSE.md).
 
@@ -18,7 +18,7 @@ To install [Sage](https://www.sagemath.org) under [Ubuntu 20.04 LTS](https://rel
 ```console
 $ sudo apt install sagemath
 ```
-For other Linux and Unix distributions, or operating systems, you may need to [download Sage](https://www.sagemath.org/download) and install it manually.
+For other Linux and Unix distributions, or operating systems, you may need to [download Sage](https://www.sagemath.org/download) and install it manually. These scripts were developed for Sage 9.1.
 
 ### Attaching the scripts
 Launch Sage and attach the scripts [<code>factor.sage</code>](factor.sage) and [<code>factor-test.sage</code>](factor-test.sage), by executing:
@@ -39,7 +39,7 @@ sage: factor_completely(r, N, c = 1)
 
 Above <img src="https://render.githubusercontent.com/render/math?math=r"> is the order returned by the order finding algorithm, <img src="https://render.githubusercontent.com/render/math?math=N"> is the integer to be factored, and <img src="https://render.githubusercontent.com/render/math?math=c \ge 1"> is a constant.
 
-As is explained in [[E20]](http://arxiv.org/pdf/2007.10044.pdf), by increasing <img src="https://render.githubusercontent.com/render/math?math=c"> the success probability of the algorithm can be increased at the expense of also increasing the runtime. In virtually all cases, it is more than sufficient to let <img src="https://render.githubusercontent.com/render/math?math=c = 1"> as is the default.
+As is explained in [[E20]](http://arxiv.org/pdf/2007.10044.pdf), by increasing <img src="https://render.githubusercontent.com/render/math?math=c"> the success probability of the algorithm can be increased at the expense of also increasing the runtime. In virtually all cases, it is however more than sufficient to let <img src="https://render.githubusercontent.com/render/math?math=c = 1"> as is the default.
 
 To better understand why, recall from [[E20]](http://arxiv.org/pdf/2007.10044.pdf) that if some moderate product of small prime factors is missing from the order <img src="https://render.githubusercontent.com/render/math?math=r"> input compared to <img src="https://render.githubusercontent.com/render/math?math=\lambda'(N)">, the complete factorization will be recovered anyhow by iterating. If a <i>single</i> large prime factor is missing, it still does not matter, for the complete factorization will be found anyhow via <img src="https://render.githubusercontent.com/render/math?math=N">. It is only if <i>two</i> large prime factors are missing simultaneously, and if these two factors are associated with different prime factors <img src="https://render.githubusercontent.com/render/math?math=p_i"> of <img src="https://render.githubusercontent.com/render/math?math=N = \prod_{i = 1}^n p_i^{e_i}">, that the complete factorization of <img src="https://render.githubusercontent.com/render/math?math=N"> will not be recovered. This is extremely unlikely in practice.
 
