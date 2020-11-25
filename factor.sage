@@ -189,8 +189,16 @@ def factor_completely(r, N, c = 1):
     # Note that as an optimization, we select from Z_N'^* where N' is N with all
     # prime factors in found this far divided up. This speeds up the arithmetic 
     # after the first run, and is explained in section 2.1.
-    x = IntegerModRing(F.residual).random_element();
-    
+    while True:
+      x = IntegerModRing(F.residual).random_element();
+      if gcd(x.lift(), F.residual) == 1:
+        break;
+
+      # N.B.: This point is reached when x_j is not in Z_N'^*. In an optimized 
+      # implementation we would check if d is non-zero and if so add d to F, but
+      # we avoid doing so here to avoid checking if F is complete and breaking 
+      # both in this inner loop and multiple times in the outer loop.
+
     # Step 4.2: For i = 0, 1, .., t do:
     # 
     # Note that further speed up the arithmetic, we use a temporary variable, 

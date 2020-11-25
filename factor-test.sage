@@ -80,7 +80,10 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1, \
     print("Processing subgroup " + str(i) + ": " + str(pi) + "^" + str(ei));
 
     Ri = IntegerModRing(pi^ei);
-    gi = Ri.random_element();
+    while True:
+      gi = Ri.random_element();
+      if gcd(gi.lift(), pi) == 1:
+        break;
 
     ri = pi^(ei - 1) * (pi - 1);
     
