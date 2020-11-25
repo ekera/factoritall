@@ -188,7 +188,7 @@ def factor_completely(r, N, c = 1):
     #
     # Note that as an optimization, we select from Z_N'^* where N' is N with all
     # prime factors in found this far divided up. This speeds up the arithmetic 
-    # after the first run, and is explained in section 2.1.
+    # after the first run, and is explained in section 3.2.1.
     while True:
       x = IntegerModRing(F.residual).random_element();
       if gcd(x.lift(), F.residual) == 1:
@@ -208,7 +208,7 @@ def factor_completely(r, N, c = 1):
 
     # Step 4.2.1 for i = 0.
     d = gcd((tmp - 1).lift(), N);
-    if d not in [1, N]:
+    if 1 < d < N:
       F.add(d);
 
     for i in range(1, t + 1):
@@ -219,7 +219,7 @@ def factor_completely(r, N, c = 1):
 
       # Step 4.2.1 for i = 1, .., t.
       d = gcd((tmp - 1).lift(), N);
-      if d not in [1, N]:
+      if 1 < d < N:
         F.add(d);
 
   # The complete factorization has been found.
