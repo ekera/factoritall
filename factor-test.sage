@@ -63,7 +63,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1, \
 
   print("Selected N = " + str(N) + "\n");
 
-  # Define Z_N^*.
+  # Define Z_N.
   R = IntegerModRing(N);
 
   # Select g quickly by picking gi from each cyclic subgroup, computing its 
