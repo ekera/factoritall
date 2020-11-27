@@ -148,7 +148,7 @@ def test_exact_of_random_N(m = 192, c = 1):
 
   if m > 224:
     raise Exception("Error: It may take a long time to factor an m = " + 
-      str(m) + "bit integer N. Select a smaller m.");
+      str(m) + " bit integer N. Select a smaller m.");
 
   # Start a timer.
   timer = Timer();
