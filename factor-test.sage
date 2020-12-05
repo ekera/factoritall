@@ -121,7 +121,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1, \
         if g^(r / f) == 1:
           raise Exception("Error: The order is incorrectly approximated.");
   
-  r_max = lcm([p^(e-1) * (p-1) for [p, e] in factors])
+  r_max = lcm([p^(e-1) * (p-1) for [p, e] in factors]);
 
   print("\nSelected g = " + str(g));
   print("\nThe order of g is approximated as r =", r);
