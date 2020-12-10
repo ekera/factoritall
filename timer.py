@@ -43,7 +43,7 @@ class Timer:
       if self.delta_t >= 10 ** -3:
         hr += str(ms) + " ms ";
 
-      hr += str(us) + " us";
+      hr += str(us) + " µs";
 
       self.hr = hr;
 
