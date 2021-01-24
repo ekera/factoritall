@@ -17,9 +17,6 @@ class FactorCollection:
     # The residual factor. Initially set to N.
     self.residual = N;
 
-    # A set of observed factors to avoid processing the same factor twice.
-    self.observed_factors = set();
-
     # A set of the factors found so far, reduced so that all factors in the set 
     # are pairwise coprime to each other. This property is enforced by add().
     self.found_factors = set();
@@ -36,73 +33,49 @@ class FactorCollection:
 
   # Adds a factor to the collection.
   def add(self, d):
-    new_factors_queue = [ZZ(d)];
+    # Check that the factor is non-trivial and has not already been found.
+    if (d == 1) or (d in self.found_factors):
+      return;
 
-    while new_factors_queue != []:
-      # Fetch the next new factor to process.
-      d = new_factors_queue.pop();
+    # Test if d shares a factor with any of the factors found. All factors 
+    # found are co-prime, so d can at most share a factor with one of them.
+    D = 1;
 
-      # Check that we have not already processed this factor to save time.
-      if d in self.observed_factors:
-        continue;
-      self.observed_factors.add(d);
+    for f in self.found_factors:
+      D = gcd(f, d);
 
-      # Check if d is a perfect power.
+      if D != 1:
+        break;
+
+    if D != 1:
+      # Remove the factor, split it and add the resulting factors.
+      self.found_factors.remove(f);
+
+      f /= D;
+      d /= D;
+
+      self.add(D);
+
+      if f != 1:
+        self.add(f);
+
+      if d != 1:
+        self.add(d);
+    else:
+      # Check if d is a perfect power and if so reduce d.
       (d, _) = ZZ(d).perfect_power();
 
-      # Check if d is prime.
-      if d.is_prime(proof = False):
-          self.found_primes.add(d);
+      # Check if d is prime and if so register it and reduce the residual.
+      result = d.is_prime(proof = False);
 
-          while self.residual % d == 0:
-            self.residual /= d;
-      
-      # Add the factor the list of found factors.
+      if result:
+        self.found_primes.add(d);
+
+        while self.residual % d == 0:
+          self.residual /= d;
+
+      # Add in the factor.
       self.found_factors.add(d);
-
-      # Reduce down the factors by taking pairwise greatest common divisors, 
-      # whilst keeping track of any new factors generated.
-      while True:
-        # Take pairwise D = gcd() between all factors. Break if D != 1.
-        D = 1;
-
-        for f1 in self.found_factors:
-          if D != 1:
-            break;
-
-          for f2 in self.found_factors:
-            if f1 == f2:
-              continue;
-
-            D = gcd(f1, f2);
-            if D != 1:
-              break;
-
-        # If D = 1 at the end of the procedure, then all factors are pairwise 
-        # coprime, so we can stop iterating.
-        if D == 1:
-          break;
-
-        # We have found a new factor D.
-        new_factors_queue.append(D);
-
-        # Divide off D from all factors that are divisible by D.
-        tmp = set();
-        tmp.add(D);
-
-        for f in self.found_factors:
-          x = f;
-          while gcd(x, D) > 1:
-            x /= gcd(x, D);
-
-          if x > 1:
-            tmp.add(x);
-
-            if x != f:
-              # We have found a new factor x.
-              new_factors_queue.append(x);
-
-        self.found_factors = tmp;
 
   def __repr__(self):
     return "Factors: " + str(self.found_factors);
