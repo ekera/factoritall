@@ -24,6 +24,14 @@ class FactorCollection:
     # A set of found prime factors.
     self.found_primes = set();
 
+    # A timer for measuring the time spent performing primality tests.
+    self.timer_test_primality = Timer();
+    self.timer_test_primality.reset();
+
+    # A timer for measuring the time spent detecting perfect powers.
+    self.timer_test_perfect_power = Timer();
+    self.timer_test_perfect_power.reset();
+
     # Call add() to report N as a factor.
     self.add(N);
 
@@ -63,10 +71,14 @@ class FactorCollection:
         self.add(d);
     else:
       # Check if d is a perfect power and if so reduce d.
+      self.timer_test_perfect_power.start();
       (d, _) = ZZ(d).perfect_power();
+      self.timer_test_perfect_power.stop();
 
       # Check if d is prime and if so register it and reduce the residual.
+      self.timer_test_primality.start();
       result = d.is_prime(proof = False);
+      self.timer_test_primality.stop();
 
       if result:
         self.found_primes.add(d);
@@ -121,8 +133,12 @@ def factor_completely(r, N, c = 1):
   N = ZZ(N);
   m = N.nbits();
 
-  # Start a timer.
+  # Setup and start a timer to measure the total time required to solve.
   timer = Timer();
+
+  # Setup and reset a timer to measure the time spent exponentiating.
+  exponentiation_timer = Timer();
+  exponentiation_timer.reset();
 
   # Step 2: Build the product of prime factors q^e < cm and multiply onto r.
   rp = build_prime_power_product(c * m) * r;
@@ -177,7 +193,9 @@ def factor_completely(r, N, c = 1):
     # Note that further speed up the arithmetic, we use a temporary variable, 
     # that we initially set to x^o and then square repeatedly, as opposed to
     # computing x^(2^i o) in each iteration.
+    exponentiation_timer.start();
     tmp = x^o;
+    exponentiation_timer.stop();
 
     # Step 4.2.1 for i = 0.
     d = gcd((tmp - 1).lift(), N);
@@ -188,7 +206,9 @@ def factor_completely(r, N, c = 1):
       if tmp == 1:
         break; # No point in continuing. If we square again, we get one again.
 
+      exponentiation_timer.start();
       tmp = tmp^2;
+      exponentiation_timer.stop();
 
       # Step 4.2.1 for i = 1, .., t.
       d = gcd((tmp - 1).lift(), N);
@@ -197,6 +217,9 @@ def factor_completely(r, N, c = 1):
 
   # The complete factorization has been found.
   print("Time required to solve:", timer.stop());
+  print(" Time spent exponentiating:", exponentiation_timer.stop());
+  print(" Time spent checking primality:", F.timer_test_primality.stop());
+  print(" Time spent reducing perfect powers:", F.timer_test_perfect_power.stop());
 
   # Sanity check to assert that the factorization is correct and complete.
   tmp = N;
