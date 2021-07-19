@@ -1,8 +1,9 @@
 # ------------------------------------------------------------------------------
 # This Sage script implements the procedure described in the paper:
-# 
-# [E20] Ekerå, M.: "On completely factoring any integer efficiently in a single 
-#                   run of an order finding algorithm" (2020).
+#
+# [E21b] Ekerå, M.: "On completely factoring any integer efficiently in a single
+#                    run of an order-finding algorithm".
+#                   Quantum Inf. Process. 20(6):205 (2021).
 #
 # Use factor_completely(r, N, c = 1) to solve for r the order and N the integer.
 
@@ -95,8 +96,8 @@ class FactorCollection:
 # ------------------------------------------------------------------------------
 # Solves a problem instance given by r and N.
 #
-# The parameter c is as described in [E20]. The parameter k in [E20] need not be
-# explicitly specified: As many iterations k as are necessary to completely 
+# The parameter c is as described in [E21b]. The parameter k in [E21b] need not 
+# be explicitly specified: As many iterations k as are necessary to completely
 # factor N will be performed. The algorithm will then stop.
 # 
 # This function returns the set of all distinct prime factors that divide N.
@@ -176,8 +177,8 @@ def factor_completely(r, N, c = 1):
     # Step 4.1: Select x uniformly at random from Z_N^*.
     #
     # Note that as an optimization, we select from Z_N'^* where N' is N with all
-    # prime factors in found this far divided up. This speeds up the arithmetic 
-    # after the first run, and is explained in section 3.2.1.
+    # prime factors found thus far divided off. This speeds up the arithmetic
+    # after the first run, and is explained in Section 3.2.1.
     while True:
       x = IntegerModRing(F.residual).random_element();
       if gcd(x.lift(), F.residual) == 1:

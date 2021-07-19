@@ -1,8 +1,9 @@
 # ------------------------------------------------------------------------------
 # This Sage script implements tests for the procedure described in the paper:
-# 
-# [E20] Ekerå, M.: "On completely factoring any integer efficiently in a single 
-#                   run of an order finding algorithm" (2020).
+#
+# [E21b] Ekerå, M.: "On completely factoring any integer efficiently in a single 
+#                    run of an order-finding algorithm".
+#                   Quantum Inf. Process. 20(6):205 (2021).
 
 from timer import Timer;
 
@@ -13,7 +14,7 @@ from timer import Timer;
 # random from [3, 2^l], and n exponents ei uniformly at random from [1, e_max].
 # It will then compute N = p1^e1 * .. * pn^en, select g uniformly at random from
 # the multiplicative group of the ring of integers modulo N, and heuristically 
-# determine the order r of g using the method described in Appendix A to [E20].
+# determine the order r of g using the method described in Appendix A to [E21b].
 # 
 # Finally, it will call the solver for r and N passing along the constant c.
 def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1, \
@@ -183,7 +184,7 @@ def test_exact_of_random_N(m = 192, c = 1):
   print("\nFinished building the problem instance, solving commences...\n");
   factor_completely(r, N, c);
 
-# This function executes the test suite described in appendix A.3 of [E20].
+# This function executes the test suite described in Appendix A.3 of [E21b].
 def test_all_appendix_A():
   # Start a timer.
   timer = Timer();
