@@ -150,7 +150,7 @@ def factor_completely(r, N, c = 1,
   def build_prime_power_product(B):
     factor = 1;
 
-    for q in primes(B + 1):
+    for q in prime_range(B + 1):
       e = 1;
       while q^(e + 1) <= B:
         e += 1;

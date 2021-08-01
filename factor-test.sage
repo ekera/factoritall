@@ -10,7 +10,7 @@ from timer import Timer;
 # ------------------------------------------------------------------------------
 # Tests the implementation of the factoring algorithm.
 
-# This function will first select n distinct l bit odd prime numbers pi
+# This function will first select n >= 2 distinct l bit odd prime numbers pi
 # uniformly at random, and n exponents ei uniformly at random from [1, e_max].
 # It will then compute N = p1^e1 * .. * pn^en, select g uniformly at random from
 # the multiplicative group of the ring of integers modulo N, and heuristically
@@ -38,10 +38,10 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
     raise Exception("Error: Incorrect parameters: It is required that " +
       "n >= 2, e_max >= 1, c >= 1, l > 0 and Bs >= 10^3.");
 
-  if l <= 16:
-    count = len([f for f in primes(2^(l-1), 2^l)]);
+  if l <= 24:
+    count = prime_pi(2^l - 1) - prime_pi(2^(l-1) - 1);
     if l == 2:
-      count -= 1; # Exclude 2 since this prime is not odd.
+      count -= 1; # Explicitly exclude 2. Only relevant when l = 2.
     if n > count:
       raise Exception("Error: Incorrect parameters: Ran out of primes: "
         "There are less than " + str(n) + " odd l bit primes.");
@@ -78,7 +78,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   gis = [];
   mds = [];
 
-  P = [f for f in primes(Bs + 1)];
+  P = prime_range(Bs + 1);
 
   for i in range(len(factors)):
     [pi, ei] = factors[i];
@@ -122,7 +122,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
     if g^r != 1:
       raise Exception("Error: The order is incorrectly approximated.");
     
-    for f in primes(Bs + 1):
+    for f in P:
       if r % f == 0:
         if g^(r / f) == 1:
           raise Exception("Error: The order is incorrectly approximated.");
