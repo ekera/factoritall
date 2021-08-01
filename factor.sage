@@ -27,11 +27,9 @@ class FactorCollection:
 
     # A timer for measuring the time spent performing primality tests.
     self.timer_test_primality = Timer();
-    self.timer_test_primality.reset();
 
     # A timer for measuring the time spent detecting perfect powers.
     self.timer_test_perfect_power = Timer();
-    self.timer_test_perfect_power.reset();
 
     # Call add() to report N as a factor.
     self.add(N);
@@ -177,11 +175,10 @@ def factor_completely(r, N, c = 1,
   m = N.nbits();
 
   # Setup and start a timer to measure the total time required to solve.
-  timer = Timer();
+  timer = Timer().start();
 
   # Setup and reset a timer to measure the time spent exponentiating.
   timer_exponentiation = Timer();
-  timer_exponentiation.reset();
 
   # Step 2: Build the product of prime factors q^e < cm and multiply onto r.
   rp = build_prime_power_product(c * m) * r;
@@ -262,11 +259,14 @@ def factor_completely(r, N, c = 1,
       if 1 < d < N:
         F.add(d);
 
+  # Stop the timer.
+  timer.stop();
+
   # The complete factorization has been found.
-  print("Time required to solve:", timer.stop());
-  print(" Time spent exponentiating:", timer_exponentiation.stop());
-  print(" Time spent checking primality:", F.timer_test_primality.stop());
-  print(" Time spent reducing perfect powers:", F.timer_test_perfect_power.stop());
+  print("Time required to solve:", timer);
+  print(" Time spent exponentiating:", timer_exponentiation);
+  print(" Time spent checking primality:", F.timer_test_primality);
+  print(" Time spent reducing perfect powers:", F.timer_test_perfect_power);
 
   # Sanity check to assert that the factorization is correct and complete.
   tmp = N;

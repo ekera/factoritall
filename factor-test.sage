@@ -47,7 +47,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
         "There are less than " + str(n) + " odd l bit primes.");
 
   # Start a timer.
-  timer = Timer();
+  setup_timer = Timer().start();
 
   # Randomly select m distinct prime factors for N of length n bits.
   factors = [];
@@ -134,8 +134,11 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   print("\nThe maximal order is lambda(N) =", r_max);
   print("\nThe fraction lambda(N) / r = " + str(factor(r_max / r)) + "\n");
 
+  # Stop the timer.
+  setup_timer.stop();
+
   # The problem instance has been constructed.
-  print("Time required to construct problem instance:", timer.stop());
+  print("Time required to construct the problem instance:", setup_timer);
 
   print("\nFinished building the problem instance, solving commences...\n");
   factor_completely(r, N, c,
@@ -163,7 +166,7 @@ def test_exact_of_random_N(m = 192, c = 1,
       str(m) + " bit integer N. Select m <= 224.");
 
   # Start a timer.
-  timer = Timer();
+  setup_timer = Timer().start();
 
   # Pick an m bit composite integer N uniformly at random.
   R = IntegerModRing(2^(m-1));
@@ -189,8 +192,11 @@ def test_exact_of_random_N(m = 192, c = 1,
 
   print("The order of g is r =", str(r) + "\n");
 
+  # Stop the timer.
+  setup_timer.stop();
+
   # The problem instance has been constructed.
-  print("Time required to construct problem instance:", timer.stop());
+  print("Time required to construct the problem instance:", setup_timer);
 
   print("\nFinished building the problem instance, solving commences...\n");
   factor_completely(r, N, c,
@@ -203,7 +209,7 @@ def test_all_appendix_A(
   timeout = None):
 
   # Start a timer.
-  timer = Timer();
+  timer = Timer().start();
 
   for l in [256, 512, 1024]:
     for n in [2, 5, 10, 25]:
@@ -214,5 +220,8 @@ def test_all_appendix_A(
           k = k,
           timeout = timeout);
 
+  # Stop the timer.
+  timer.stop();
+
   # The tests have been executed.
-  print("\n ** Time required to execute all tests:", timer.stop());
+  print("\n ** Time required to setup and execute all tests:", timer);
