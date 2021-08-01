@@ -89,6 +89,18 @@ class FactorCollection:
       # Add in the factor.
       self.found_factors.add(d);
 
+  # Prints status information for this collection.
+  def print_status(self):
+    print("Found factors:", len(self.found_factors));
+    print("Found primes:", len(self.found_primes));
+
+    found_factors = list(self.found_factors);
+    found_factors.sort();
+
+    for i in range(len(found_factors)):
+      print(" Factor " + str(i) + ":", found_factors[i]);
+    print("");
+
   # Compares this collection to another collection.
   def __eq__(self, other):
     if self.N != other.N:
@@ -170,15 +182,7 @@ def factor_completely(r, N, c = 1):
   while True:
     # Print current status information before proceeding.
     print("Iteration:", j);
-    print("Found factors:", len(F.found_factors));
-    print("Found primes:", len(F.found_primes));
-    
-    found_factors = list(F.found_factors);
-    found_factors.sort();
-  
-    for i in range(len(found_factors)):
-      print(" Factor " + str(i) + ":", found_factors[i]);
-    print("");
+    F.print_status();
 
     # Check if we're done...
     if F.is_complete():
