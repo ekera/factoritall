@@ -15,9 +15,6 @@ class FactorCollection:
     # The integer N to be factored.
     self.N = N;
 
-    # The residual factor. Initially set to N.
-    self.residual = N;
-
     # A set of the factors found so far, reduced so that all factors in the set
     # are pairwise coprime to each other. This property is enforced by add().
     self.found_factors = set();
@@ -31,7 +28,11 @@ class FactorCollection:
     # A timer for measuring the time spent detecting perfect powers.
     self.timer_test_perfect_power = Timer();
 
-    # Call add() to report N as a factor.
+    # Set the residual; the product of the composite pairwise coprime factors in
+    # the collection, or 1 if there are no composite factors in the collection.
+    self.residual = 1;
+
+    # Add N as a factor.
     self.add(N);
 
   # Checks if all prime factors have been found.
@@ -56,6 +57,9 @@ class FactorCollection:
     if D != 1:
       # If so, remove f, split f and d, and add the resulting factors.
       self.found_factors.remove(f);
+      if f not in self.found_primes:
+        # Also remove f from the residual when removing f from the collection.
+        self.residual /= f;
 
       f /= D;
       d /= D;
@@ -68,24 +72,24 @@ class FactorCollection:
       if d != 1:
         self.add(d);
     else:
-      # Check if d is a perfect power and if so reduce d.
+      # Check if d is a perfect power, and if so reduce d.
       self.timer_test_perfect_power.start();
       (d, _) = ZZ(d).perfect_power();
       self.timer_test_perfect_power.stop();
 
-      # Check if d is prime and if so register it and reduce the residual.
+      # Add d to the factors found.
+      self.found_factors.add(d);
+
+      # Check if d is prime, and if so register it.
       self.timer_test_primality.start();
       result = d.is_prime(proof = False);
       self.timer_test_primality.stop();
 
       if result:
         self.found_primes.add(d);
-
-        while self.residual % d == 0:
-          self.residual /= d;
-
-      # Add in the factor.
-      self.found_factors.add(d);
+      else:
+        # If d is not prime, multiply d onto the residual.
+        self.residual *= d;
 
   # Prints status information for this collection.
   def print_status(self):
@@ -219,9 +223,11 @@ def factor_completely(r, N, c = 1,
 
     # Step 4.1: Select x uniformly at random from Z_N^*.
     #
-    # Note that as an optimization, we select from Z_N'^* where N' is N with all
-    # prime factors found thus far divided off. This speeds up the arithmetic
-    # after the first run, and is explained in Section 3.2.1.
+    # Note that as an optimization, we select from Z_N'^*, for N' the product of
+    # all pairwise coprime composite factors of N stored in the collection.
+    # 
+    # This speeds up the arithmetic after the first run, and is explained in 
+    # Section 3.2.1 of [E21b].
     while True:
       x = IntegerModRing(F.residual).random_element();
       if gcd(x.lift(), F.residual) == 1:
