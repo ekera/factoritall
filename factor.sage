@@ -146,13 +146,13 @@ def factor_completely(r, N, c = 1):
     if x == 0:
       return 0;
 
-    k = 0;
+    t = 0;
 
     while (x % 2) == 0:
-      k += 1;
+      t += 1;
       x /= 2;
 
-    return k;
+    return t;
 
   # Note: Step 1 is already completed.
   r = ZZ(r);
