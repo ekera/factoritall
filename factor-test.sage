@@ -18,7 +18,7 @@ from timer import Timer;
 #
 # Finally, it will call the solver for r and N passing along the constant c.
 def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
-  Bs = 10^6, sanity_check = False,
+  Bs = 10^6, sanity_check = False, return_timing_statistics = False,
   k = None,
   timeout = None):
 
@@ -141,9 +141,14 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   print("Time required to construct the problem instance:", setup_timer);
 
   print("\nFinished building the problem instance, solving commences...\n");
+  solve_timer = Timer().start();
   factor_completely(r, N, c,
     k = k,
     timeout = timeout);
+  solve_timer.stop();
+
+  if return_timing_statistics:
+    return [setup_timer, solve_timer];
 
 # This function will first select N uniformly at random from the set of all m
 # bit composites, where it is required that m be in [8, 224]. It will then
@@ -155,7 +160,8 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
 # Finally, it will call the solver for r and N passing along the constant c.
 def test_exact_of_random_N(m = 192, c = 1,
   k = None,
-  timeout = None):
+  timeout = None,
+  return_timing_statistics = False):
 
   # Sanity checks.
   if m < 8:
@@ -199,14 +205,23 @@ def test_exact_of_random_N(m = 192, c = 1,
   print("Time required to construct the problem instance:", setup_timer);
 
   print("\nFinished building the problem instance, solving commences...\n");
+  solve_timer = Timer().start();
   factor_completely(r, N, c,
     k = k,
     timeout = timeout);
+  solve_timer.stop();
+
+  if return_timing_statistics:
+    return [setup_timer, solve_timer];
 
 # This function executes the test suite described in Appendix A.3 of [E21b].
 def test_all_appendix_A(
   k = None,
   timeout = None):
+
+  # Setup stopped timers for accumulating timing statistics.
+  accumulated_setup_timer = Timer();
+  accumulated_solve_timer = Timer();
 
   # Start a timer.
   timer = Timer().start();
@@ -216,12 +231,22 @@ def test_all_appendix_A(
       for e_max in [1, 2, 3]:
         print("\n ** Running test for l =", str(l) + ", n =", str(n) +
           ", e_max =", str(e_max) + "...\n");
-        test_heuristic_of_random_pi_ei(l, n, e_max,
-          k = k,
-          timeout = timeout);
+
+        [setup_timer, solve_timer] = \
+          test_heuristic_of_random_pi_ei(l, n, e_max,
+            return_timing_statistics = True,
+            k = k,
+            timeout = timeout);
+
+        accumulated_setup_timer += setup_timer;
+        accumulated_solve_timer += solve_timer;
 
   # Stop the timer.
   timer.stop();
 
   # The tests have been executed.
   print("\n ** Time required to setup and execute all tests:", timer);
+  print(" **   Time required to setup all problem instances:",
+    accumulated_setup_timer);
+  print(" **   Time required to solve all problem instances:",
+    accumulated_solve_timer);
