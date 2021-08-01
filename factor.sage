@@ -89,8 +89,9 @@ class FactorCollection:
       # Add in the factor.
       self.found_factors.add(d);
 
+  # Represents this collection as a string.
   def __repr__(self):
-    return "Factors: " + str(self.found_factors);
+    return str(self.found_factors);
 
 # ------------------------------------------------------------------------------
 # Solves a problem instance given by r and N.
