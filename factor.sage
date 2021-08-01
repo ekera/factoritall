@@ -89,6 +89,19 @@ class FactorCollection:
       # Add in the factor.
       self.found_factors.add(d);
 
+  # Compares this collection to another collection.
+  def __eq__(self, other):
+    if self.N != other.N:
+      return False;
+    if self.residual != other.residual:
+      return False;
+    if self.found_factors != other.found_factors:
+      return False;
+    if self.found_primes != other.found_primes:
+      return False;
+
+    return True; # Note: Disregards timer differences.
+
   # Represents this collection as a string.
   def __repr__(self):
     return str(self.found_factors);
