@@ -12,17 +12,17 @@ from timer import Timer;
 # Supporting class to collect the non-trivial factors of N on reduced form.
 class FactorCollection:
   def __init__(self, N):
-    # The number N to be factored.
+    # The integer N to be factored.
     self.N = N;
 
     # The residual factor. Initially set to N.
     self.residual = N;
 
-    # A set of the factors found so far, reduced so that all factors in the set 
+    # A set of the factors found so far, reduced so that all factors in the set
     # are pairwise coprime to each other. This property is enforced by add().
     self.found_factors = set();
 
-    # A set of found prime factors.
+    # A set of found prime factors; a subset of found_factors defined above.
     self.found_primes = set();
 
     # A timer for measuring the time spent performing primality tests.
@@ -40,14 +40,13 @@ class FactorCollection:
   def is_complete(self):
     return self.residual == 1;
 
-  # Adds a factor to the collection.
+  # Adds a factor to this collection.
   def add(self, d):
     # Check that the factor is non-trivial and has not already been found.
     if (d == 1) or (d in self.found_factors):
       return;
 
-    # Test if d shares a factor with any of the factors found. All factors 
-    # found are co-prime, so d can at most share a factor with one of them.
+    # Test if d shares a factor with any of the factors found.
     D = 1;
 
     for f in self.found_factors:
@@ -57,7 +56,7 @@ class FactorCollection:
         break;
 
     if D != 1:
-      # Remove the factor, split it and add the resulting factors.
+      # If so, remove f, split f and d, and add the resulting factors.
       self.found_factors.remove(f);
 
       f /= D;
