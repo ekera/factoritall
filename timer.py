@@ -69,3 +69,13 @@ class Timer:
   def restart(self):
     self.reset();
     self.start();
+
+  # Peeks at the a running or stopped timer, returning the number of seconds
+  # elapsed. For a stopped timer, the time delta is returned. For a running
+  # timer, the sum of the time delta and the time offset is returned.
+  def peek(self):
+    tmp_delta_t = self.delta_t;
+    if self.state == Timer.RUNNING:
+      tmp_delta_t += time() - self.t;
+
+    return tmp_delta_t;

@@ -17,8 +17,10 @@ from timer import Timer;
 # determine the order r of g using the method described in Appendix A to [E21b].
 # 
 # Finally, it will call the solver for r and N passing along the constant c.
-def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1, \
-  Bs = 10^6, sanity_check = False):
+def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
+  Bs = 10^6, sanity_check = False,
+  k = None,
+  timeout = None):
 
   # Supporting function to select a prime uniformly at random from [2, 2^l).
   def generate_prime(l):
@@ -133,7 +135,9 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1, \
   print("Time required to construct problem instance:", timer.stop());
 
   print("\nFinished building the problem instance, solving commences...\n");
-  factor_completely(r, N, c);
+  factor_completely(r, N, c,
+    k = k,
+    timeout = timeout);
 
 # This function will first select N uniformly at random from the set of all m 
 # bit composites, where it is required that m be in [8, 224]. It will then 
@@ -143,7 +147,11 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1, \
 # using functions native to Sage.
 # 
 # Finally, it will call the solver for r and N passing along the constant c.
-def test_exact_of_random_N(m = 192, c = 1):
+def test_exact_of_random_N(m = 192, c = 1,
+  k = None,
+  timeout = None):
+
+  # Sanity checks.
   if m < 8:
     raise Exception("Error: Select a larger m.");
 
@@ -182,10 +190,15 @@ def test_exact_of_random_N(m = 192, c = 1):
   print("Time required to construct problem instance:", timer.stop());
 
   print("\nFinished building the problem instance, solving commences...\n");
-  factor_completely(r, N, c);
+  factor_completely(r, N, c,
+    k = k,
+    timeout = timeout);
 
 # This function executes the test suite described in Appendix A.3 of [E21b].
-def test_all_appendix_A():
+def test_all_appendix_A(
+  k = None,
+  timeout = None):
+
   # Start a timer.
   timer = Timer();
 
@@ -194,7 +207,9 @@ def test_all_appendix_A():
       for e_max in [1, 2, 3]:
         print("\n ** Running test for l =", str(l) + ", n =", str(n) + \
           ", e_max =", str(e_max) + "...\n");
-        test_heuristic_of_random_pi_ei(l, n, e_max);
+        test_heuristic_of_random_pi_ei(l, n, e_max,
+          k = k,
+          timeout = timeout);
 
   # The tests have been executed.
   print("\n ** Time required to execute all tests:", timer.stop());

@@ -118,15 +118,28 @@ class FactorCollection:
   def __repr__(self):
     return str(self.found_factors);
 
+# An exception that is raised to signal an incomplete factorization. This occurs
+# only if an interation or timeout limit has been specified.
+class IncompleteFactorizationException(Exception):
+  def __init__(self, message, factors):
+    super().__init__(message);
+    self.factors = factors;
+
 # ------------------------------------------------------------------------------
 # Solves a problem instance given by r and N.
 #
 # The parameter c is as described in [E21b]. The parameter k in [E21b] need not 
-# be explicitly specified: As many iterations k as are necessary to completely
-# factor N will be performed. The algorithm will then stop.
-# 
+# be explicitly specified: By default, as many iterations k as are necessary to
+# completely factor N will be performed. The algorithm will then stop.
+#
+# If you wish, you max specify k and/or a timeout in seconds. If the number of
+# iterations performed exceeds k, or if the timeout is exceeded, an exception of
+# type IncompleteFactorizationException will be raised.
+#
 # This function returns the set of all distinct prime factors that divide N.
-def factor_completely(r, N, c = 1):
+def factor_completely(r, N, c = 1,
+  k = None,
+  timeout = None):
 
   # Sanity checks.
   if (r < 1) or (N < 2) or (c < 1):
@@ -194,6 +207,18 @@ def factor_completely(r, N, c = 1):
 
     # Increment j for the next iteration.
     j += 1;
+
+    # Check that j <= k, if k is specified, and if so raise an exception passing
+    # along the factors that have been found thus far.
+    if (k != None) and (j > k):
+      raise IncompleteFactorizationException(
+        "Error: The iteration limit has been exceeded.", F.found_factors);
+
+    # Check that the timeout is not exceeded, if specified, and if so raise an
+    # exception passing along the factors that have been found thus far.
+    if (timeout != None) and (timer.peek() > timeout):
+      raise IncompleteFactorizationException(\
+        "Error: The timeout limit has been exceeded.", F.found_factors);
 
     # Step 4.1: Select x uniformly at random from Z_N^*.
     #
