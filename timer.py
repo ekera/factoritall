@@ -16,7 +16,7 @@ class Timer:
 
     self.start();
 
-  # Starts the timer after it has been stopped. If the timer is currently 
+  # Starts the timer after it has been stopped. If the timer is currently
   # running, calling this function has no effect.
   def start(self):
     if self.state != Timer.STOPPED:

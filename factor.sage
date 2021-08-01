@@ -128,7 +128,7 @@ class IncompleteFactorizationException(Exception):
 # ------------------------------------------------------------------------------
 # Solves a problem instance given by r and N.
 #
-# The parameter c is as described in [E21b]. The parameter k in [E21b] need not 
+# The parameter c is as described in [E21b]. The parameter k in [E21b] need not
 # be explicitly specified: By default, as many iterations k as are necessary to
 # completely factor N will be performed. The algorithm will then stop.
 #
@@ -145,7 +145,7 @@ def factor_completely(r, N, c = 1,
   if (r < 1) or (N < 2) or (c < 1):
     raise Exception("Error: Incorrect parameters.");
 
-  # Supporting function to build the product of q^e, for q all primes <= B and e 
+  # Supporting function to build the product of q^e, for q all primes <= B and e
   # the largest exponent such that q^e <= B for B some bound.
   def build_prime_power_product(B):
     factor = 1;
@@ -230,14 +230,14 @@ def factor_completely(r, N, c = 1,
       if gcd(x.lift(), F.residual) == 1:
         break;
 
-      # N.B.: This point is reached when x_j is not in Z_N'^*. In an optimized 
+      # N.B.: This point is reached when x_j is not in Z_N'^*. In an optimized
       # implementation we would check if d is non-zero and if so add d to F, but
-      # we avoid doing so here to avoid checking if F is complete and breaking 
+      # we avoid doing so here to avoid checking if F is complete and breaking
       # both in this inner loop and multiple times in the outer loop.
 
     # Step 4.2: For i = 0, 1, .., t do:
-    # 
-    # Note that further speed up the arithmetic, we use a temporary variable, 
+    #
+    # Note that further speed up the arithmetic, we use a temporary variable,
     # that we initially set to x^o and then square repeatedly, as opposed to
     # computing x^(2^i o) in each iteration.
     timer_exponentiation.start();

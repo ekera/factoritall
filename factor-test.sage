@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # This Sage script implements tests for the procedure described in the paper:
 #
-# [E21b] Ekerå, M.: "On completely factoring any integer efficiently in a single 
+# [E21b] Ekerå, M.: "On completely factoring any integer efficiently in a single
 #                    run of an order-finding algorithm".
 #                   Quantum Inf. Process. 20(6):205 (2021).
 
@@ -72,7 +72,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   # Define Z_N.
   R = IntegerModRing(N);
 
-  # Select g quickly by picking gi from each cyclic subgroup, computing its 
+  # Select g quickly by picking gi from each cyclic subgroup, computing its
   # order, and composing under the CRT. This avoids exponentiating modulo N.
   ris = [];
   gis = [];
@@ -92,7 +92,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
         break;
 
     ri = pi^(ei - 1) * (pi - 1);
-    
+
     ri_base = ri;
     ri = 1;
 
@@ -108,25 +108,25 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
         if gi_base^(ri / f) != 1:
           break;
         ri /= f;
-    
+
     ri *= ri_base;
-  
+
     ris.append(ri);
     gis.append(gi.lift());
     mds.append(pi^ei);
-    
+
   g = R(crt(gis, mds)); # map (g1, .., gn) to g in Z_N^*
   r = lcm(ris); # order of g
 
   if sanity_check:
     if g^r != 1:
       raise Exception("Error: The order is incorrectly approximated.");
-    
+
     for f in P:
       if r % f == 0:
         if g^(r / f) == 1:
           raise Exception("Error: The order is incorrectly approximated.");
-  
+
   r_max = lcm([p^(e-1) * (p-1) for [p, e] in factors]);
 
   print("\nSelected g = " + str(g));
@@ -142,13 +142,13 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
     k = k,
     timeout = timeout);
 
-# This function will first select N uniformly at random from the set of all m 
-# bit composites, where it is required that m be in [8, 224]. It will then 
-# select g uniformly at random from the multiplicative group of the ring of 
-# integers modulo N, and compute the order r of g exactly classically by 
+# This function will first select N uniformly at random from the set of all m
+# bit composites, where it is required that m be in [8, 224]. It will then
+# select g uniformly at random from the multiplicative group of the ring of
+# integers modulo N, and compute the order r of g exactly classically by
 # factoring N = p1^e1 * .. * pn^en and then factoring pi - 1 for i in [1, n]
 # using functions native to Sage.
-# 
+#
 # Finally, it will call the solver for r and N passing along the constant c.
 def test_exact_of_random_N(m = 192, c = 1,
   k = None,
@@ -166,9 +166,9 @@ def test_exact_of_random_N(m = 192, c = 1,
   timer = Timer();
 
   # Pick an m bit composite integer N uniformly at random.
-  R = IntegerModRing(2^(m - 1));
+  R = IntegerModRing(2^(m-1));
   while True:
-    N = R.random_element().lift() + 2^(m - 1);
+    N = R.random_element().lift() + 2^(m-1);
     if not N.is_prime(proof = False):
       break;
 
@@ -188,7 +188,7 @@ def test_exact_of_random_N(m = 192, c = 1,
   r = g.multiplicative_order();
 
   print("The order of g is r =", str(r) + "\n");
-  
+
   # The problem instance has been constructed.
   print("Time required to construct problem instance:", timer.stop());
 
@@ -208,7 +208,7 @@ def test_all_appendix_A(
   for l in [256, 512, 1024]:
     for n in [2, 5, 10, 25]:
       for e_max in [1, 2, 3]:
-        print("\n ** Running test for l =", str(l) + ", n =", str(n) + \
+        print("\n ** Running test for l =", str(l) + ", n =", str(n) +
           ", e_max =", str(e_max) + "...\n");
         test_heuristic_of_random_pi_ei(l, n, e_max,
           k = k,
