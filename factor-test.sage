@@ -4,6 +4,8 @@
 # [E21b] Ekerå, M.: "On completely factoring any integer efficiently in a single
 #                    run of an order-finding algorithm".
 #                   Quantum Inf. Process. 20(6):205 (2021).
+#
+# Note: You must attach "factor.sage" prior to attaching this file.
 
 from timer import Timer;
 
@@ -20,7 +22,9 @@ from timer import Timer;
 def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   Bs = 10^6, sanity_check = False, return_timing_statistics = False,
   k = None,
-  timeout = None):
+  timeout = None,
+  opt_process_composite_factors =
+    OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
   # Function to select an odd prime uniformly at random from [2^(l-1), 2^l).
   def generate_prime(l):
@@ -144,7 +148,9 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   solve_timer = Timer().start();
   factor_completely(r, N, c,
     k = k,
-    timeout = timeout);
+    timeout = timeout,
+    opt_process_composite_factors =
+      opt_process_composite_factors);
   solve_timer.stop();
 
   if return_timing_statistics:
@@ -161,7 +167,9 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
 def test_exact_of_random_N(m = 192, c = 1,
   k = None,
   timeout = None,
-  return_timing_statistics = False):
+  return_timing_statistics = False,
+  opt_process_composite_factors =
+    OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
   # Sanity checks.
   if m < 8:
@@ -208,7 +216,9 @@ def test_exact_of_random_N(m = 192, c = 1,
   solve_timer = Timer().start();
   factor_completely(r, N, c,
     k = k,
-    timeout = timeout);
+    timeout = timeout,
+    opt_process_composite_factors =
+      opt_process_composite_factors);
   solve_timer.stop();
 
   if return_timing_statistics:
@@ -217,7 +227,9 @@ def test_exact_of_random_N(m = 192, c = 1,
 # This function executes the test suite described in Appendix A.3 of [E21b].
 def test_all_appendix_A(
   k = None,
-  timeout = None):
+  timeout = None,
+  opt_process_composite_factors =
+    OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
   # Setup stopped timers for accumulating timing statistics.
   accumulated_setup_timer = Timer();
@@ -236,7 +248,9 @@ def test_all_appendix_A(
           test_heuristic_of_random_pi_ei(l, n, e_max,
             return_timing_statistics = True,
             k = k,
-            timeout = timeout);
+            timeout = timeout,
+            opt_process_composite_factors =
+              opt_process_composite_factors);
 
         accumulated_setup_timer += setup_timer;
         accumulated_solve_timer += solve_timer;

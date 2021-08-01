@@ -82,6 +82,9 @@ To run the test suite described in Appendix A.3 of [[E21b]](https://doi.org/10.1
 sage: test_all_appendix_A()
 ```
 
+## Notes on optimizations
+This implementation supports several optimizations that may be enabled or disabled by passing along flags to the functions described in the above sections. For more information, see the [notes on optimizations](optimizations.md).
+
 ## About and acknowledgments
 This script was developed by [Martin Ekerå](mailto:ekera@kth.se), in part at [KTH, the Royal Institute of Technology](https://www.kth.se/en), in Stockholm, [Sweden](https://www.sweden.se). Valuable comments and advice were provided by Johan Håstad throughout the development process.
 

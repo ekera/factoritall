@@ -9,6 +9,31 @@
 
 from timer import Timer;
 
+# An enumeration of optimization options for how factors are processed.
+#
+# For further details, see "optimizations.md" and Section 3.2.1 of [E21b].
+class OptProcessCompositeFactors:
+  # Select x uniformly at random from Z_N^*, for N the number to be factored,
+  # and exponentiate x modulo N to 2^t o.
+  #
+  # This is as described in the algorithm in Section 3.2 of [E21b].
+  JOINTLY_MOD_N = 1;
+
+  # Select x uniformly at random from Z_N'^*, for N' the product of all pairwise
+  # coprime composite factors of N currently stored in the collection, and
+  # exponentiate x modulo N' to 2^t o.
+  #
+  # This is as above, but with optimizations from Section 3.2.1 of [E21b].
+  JOINTLY_MOD_Np = 2;
+
+  # Select x uniformly at random from Z_N'^*, for N' the product of all pairwise
+  # coprime composite factors of N currently stored in the collection.
+  # Exponentiate x modulo N' to 2^t o, as N' runs over each pairwise coprime
+  # composite factor of N currently stored in the collection.
+  #
+  # This is as above, but with more optimizations from Section 3.2.1 of [E21b].
+  SEPARATELY_MOD_Np = 3;
+
 # Supporting class to collect the non-trivial factors of N on reduced form.
 class FactorCollection:
   def __init__(self, N):
@@ -138,10 +163,15 @@ class IncompleteFactorizationException(Exception):
 # iterations performed exceeds k, or if the timeout is exceeded, an exception of
 # type IncompleteFactorizationException will be raised.
 #
+# The remaining arguments are optimization flags. They are documented below in
+# the code, and in "optimizations.md". It is recommended to use the defaults.
+#
 # This function returns the set of all distinct prime factors that divide N.
 def factor_completely(r, N, c = 1,
   k = None,
-  timeout = None):
+  timeout = None,
+  opt_process_composite_factors =
+    OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
   # Sanity checks.
   if (r < 1) or (N < 2) or (c < 1):
@@ -222,48 +252,93 @@ def factor_completely(r, N, c = 1,
         "Error: The timeout limit has been exceeded.", F.found_factors);
 
     # Step 4.1: Select x uniformly at random from Z_N^*.
+
+    # Optimization: Select x uniformly at random from Z_N'^*, for N' the product
+    # of all pairwise coprime composite factors of N stored in the collection.
+    # This as opposed to selecting x uniformly at random from Z_N'^*, for
+    # N' = N, when not applying the optimization.
     #
-    # Note that as an optimization, we select from Z_N'^*, for N' the product of
-    # all pairwise coprime composite factors of N stored in the collection.
-    # 
-    # This speeds up the arithmetic after the first run, and is explained in 
-    # Section 3.2.1 of [E21b].
+    # For details, see "optimizations.md" and Section 3.2.1 of [E21b].
+    if opt_process_composite_factors == \
+      OptProcessCompositeFactors.JOINTLY_MOD_N:
+      # Let N' (denoted Np in the code) be N when not applying the optimization.
+      Np = N;
+    elif opt_process_composite_factors in \
+      [OptProcessCompositeFactors.JOINTLY_MOD_Np,
+       OptProcessCompositeFactors.SEPARATELY_MOD_Np]:
+      # Let N' (denoted Np in the code) be the product of all pairwise coprime
+      # composite factors of N stored in the collection.
+      Np = F.residual;
+    else:
+      raise Exception("Error: Invalid option: opt_process_composite_factors.");
+
     while True:
-      x = IntegerModRing(F.residual).random_element();
-      if gcd(x.lift(), F.residual) == 1:
-        break;
+      # Sample x uniformly at random from Z_N'^*.
+      x = IntegerModRing(Np).random_element();
+
+      d = gcd(x.lift(), Np);
+      if d == 1:
+        break; # The element is in Z_N'^*.
 
       # N.B.: This point is reached when x_j is not in Z_N'^*. In an optimized
       # implementation we would check if d is non-zero and if so add d to F, but
       # we avoid doing so here to avoid checking if F is complete and breaking
       # both in this inner loop and multiple times in the outer loop.
 
-    # Step 4.2: For i = 0, 1, .., t do:
+    # Optimization: Exponentiate x modulo N', for N' the product of all pairwise
+    # coprime composite factors of N stored in the collection, or as N' runs
+    # over the pairwise coprime composite factor of N stored in the collection.
+    # This as opposed to exponentiating x modulo N', for N' = N, when not
+    # applying the optimization.
     #
-    # Note that further speed up the arithmetic, we use a temporary variable,
-    # that we initially set to x^o and then square repeatedly, as opposed to
-    # computing x^(2^i o) in each iteration.
-    timer_exponentiation.start();
-    tmp = x^o;
-    timer_exponentiation.stop();
+    # For further details, see "optimizations.md" and Section 3.2.1 of [E21b].
+    if opt_process_composite_factors == \
+      OptProcessCompositeFactors.SEPARATELY_MOD_Np:
+      # Note: For SEPARATELY_MOD_Np, we compute the set of composite pairwise
+      # coprime factors stored in the collection and let N' run over the set.
+      factors = F.found_factors.difference(F.found_primes);
+    elif opt_process_composite_factors in \
+      [OptProcessCompositeFactors.JOINTLY_MOD_Np,
+       OptProcessCompositeFactors.JOINTLY_MOD_N]:
+      # Note: For JOINTLY_MOD_N we have N' = N (where we recall that N' is
+      # denoted Np in the code). For JOINTLY_MOD_Np, we have that N' is the
+      # product of all pairwise coprime composite factors of N stored in the
+      # collection. (Note: This by the manner in which N' was setup above.)
+      factors = set([Np]);
+    else:
+      raise Exception("Error: Invalid option: opt_process_composite_factors.");
 
-    # Step 4.2.1 for i = 0.
-    d = gcd((tmp - 1).lift(), N);
-    if 1 < d < N:
-      F.add(d);
+    # Exponentiate x for each factor in the set setup above.
+    #
+    # Note that when opt_process_composite_factors is set to SEPARATELY_MOD_Np,
+    # for each composite factor N' processed, any non-trivial factors of N'
+    # reported can only split N', as N' is coprime with all other factors of N
+    # stored in the collection. This implies that there is no need to go back
+    # and re-examine them factor collection after it has been updated with the
+    # addition of the non-trivial factors reported.
+    for Np in factors:
+      Rp = IntegerModRing(Np); # Define the subring Z_N'^*.
+      xp = Rp(x); # Coerce x to Z_N'^*.
 
-    for i in range(1, t + 1):
-      if tmp == 1:
-        break; # No point in continuing. If we square again, we get one again.
-
+      # Step 4.2: For i = 0, 1, .., t do:
       timer_exponentiation.start();
-      tmp = tmp^2;
+      tmp = xp^o;
       timer_exponentiation.stop();
 
-      # Step 4.2.1 for i = 1, .., t.
-      d = gcd((tmp - 1).lift(), N);
-      if 1 < d < N:
+      # Step 4.2.1 for i = 0.
+      d = gcd((tmp - 1).lift(), Np);
+      if 1 < d < Np:
         F.add(d);
+
+      for i in range(1, t + 1):
+        timer_exponentiation.start();
+        tmp = tmp^2;
+        timer_exponentiation.stop();
+
+        # Step 4.2.1 for i = 1, .., t.
+        d = gcd((tmp - 1).lift(), Np);
+        if 1 < d < Np:
+          F.add(d);
 
   # Stop the timer.
   timer.stop();
