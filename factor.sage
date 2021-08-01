@@ -128,6 +128,10 @@ class FactorCollection:
 # This function returns the set of all distinct prime factors that divide N.
 def factor_completely(r, N, c = 1):
 
+  # Sanity checks.
+  if (r < 1) or (N < 2) or (c < 1):
+    raise Exception("Error: Incorrect parameters.");
+
   # Supporting function to build the product of q^e, for q all primes <= B and e 
   # the largest exponent such that q^e <= B for B some bound.
   def build_prime_power_product(B):
