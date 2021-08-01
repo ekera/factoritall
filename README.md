@@ -68,7 +68,7 @@ To test the factoring algorithm by simulating order finding heuristically, execu
 sage: test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1)
 ```
 
-This function will first select <img src="https://render.githubusercontent.com/render/math?math=n"> distinct prime numbers <img src="https://render.githubusercontent.com/render/math?math=p_i"> uniformly at random from <img src="https://render.githubusercontent.com/render/math?math=[3, 2^{\ell})">,
+This function will first select <img src="https://render.githubusercontent.com/render/math?math=n \ge 2"> distinct primes <img src="https://render.githubusercontent.com/render/math?math=p_i"> uniformly at random from the set of all odd <img src="https://render.githubusercontent.com/render/math?math=\ell"> bit primes,
 and <img src="https://render.githubusercontent.com/render/math?math=n"> exponents <img src="https://render.githubusercontent.com/render/math?math=e_i"> uniformly at random from <img src="https://render.githubusercontent.com/render/math?math=[1, e_{\max}]">.
 It will then compute <img src="https://render.githubusercontent.com/render/math?math=N=\prod_{i=1}^n p_i^{e_i}">,
 select <img src="https://render.githubusercontent.com/render/math?math=g"> uniformly at random from <img src="https://render.githubusercontent.com/render/math?math=\mathbb Z_N^*">, and heuristically determine the order <img src="https://render.githubusercontent.com/render/math?math=r"> of <img src="https://render.githubusercontent.com/render/math?math=g"> using the method described in Appendix A of [[E21b]](https://doi.org/10.1007/s11128-021-03069-1).

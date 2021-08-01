@@ -10,24 +10,26 @@ from timer import Timer;
 # ------------------------------------------------------------------------------
 # Tests the implementation of the factoring algorithm.
 
-# This function will first select n distinct prime numbers pi uniformly at 
-# random from [3, 2^l], and n exponents ei uniformly at random from [1, e_max].
+# This function will first select n distinct l bit odd prime numbers pi
+# uniformly at random, and n exponents ei uniformly at random from [1, e_max].
 # It will then compute N = p1^e1 * .. * pn^en, select g uniformly at random from
-# the multiplicative group of the ring of integers modulo N, and heuristically 
-# determine the order r of g using the method described in Appendix A to [E21b].
-# 
+# the multiplicative group of the ring of integers modulo N, and heuristically
+# determine the order r of g using the method described in Appendix A of [E21b].
+#
 # Finally, it will call the solver for r and N passing along the constant c.
 def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   Bs = 10^6, sanity_check = False,
   k = None,
   timeout = None):
 
-  # Supporting function to select a prime uniformly at random from [2, 2^l).
+  # Function to select an odd prime uniformly at random from [2^(l-1), 2^l).
   def generate_prime(l):
-    R = IntegerModRing(2^l);
+    R = IntegerModRing(2^(l-1));
 
     while True:
-      p = ZZ(R.random_element().lift());
+      p = 2^(l-1) + ZZ(R.random_element().lift());
+      if (p % 2) == 0:
+        continue; # Explicitly exclude 2. Only relevant when l = 2.
       if p.is_prime(proof = False):
         return p;
 
@@ -37,11 +39,13 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
       "n >= 2, e_max >= 1, c >= 1, l > 0 and Bs >= 10^3.");
 
   if l <= 16:
-    count = len([f for f in primes(2^l)]);
-    if n >= count:
+    count = len([f for f in primes(2^(l-1), 2^l)]);
+    if l == 2:
+      count -= 1; # Exclude 2 since this prime is not odd.
+    if n > count:
       raise Exception("Error: Incorrect parameters: Ran out of primes: "
-        "There are not " + str(n) + " odd primes < 2^l.");
-  
+        "There are less than " + str(n) + " odd l bit primes.");
+
   # Start a timer.
   timer = Timer();
 
@@ -53,8 +57,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
       p = generate_prime(l);
       e = 1 + IntegerModRing(e_max).random_element().lift();
 
-      # The algorithm works also for even primes but we did not prove this...
-      if (p not in [f for [f, _] in factors]) and (p != 2):
+      if p not in [f for [f, _] in factors]:
         print("Selected factor " + str(i) + ":", str(p) + "^" + str(e));
         factors.append([p, e]);
         break;
