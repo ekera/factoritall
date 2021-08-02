@@ -174,6 +174,7 @@ def factor_completely(r, N, c = 1,
   opt_report_accidental_factors = True,
   opt_abort_early = True,
   opt_square = True,
+  opt_exclude_one = True,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
@@ -298,6 +299,13 @@ def factor_completely(r, N, c = 1,
       x = IntegerModRing(Np).random_element();
       if x == 0:
         continue; # Not in Z_N'^*, and not a non-trivial factor of N'.
+
+      # Optimization: Sample x uniformly at random from Z_N'^* \ {1}.
+      #
+      # For details, see "optimizations.md" and Section 3.2.1 of [E21b].
+      if (x == 1) and opt_exclude_one:
+        print("Note: Sampled x = 1; excluding and sampling again...\n");
+        continue;
 
       d = gcd(x.lift(), Np);
       if d == 1:

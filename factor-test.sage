@@ -27,6 +27,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   opt_report_accidental_factors = True,
   opt_abort_early = True,
   opt_square = True,
+  opt_exclude_one = True,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
@@ -80,51 +81,66 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   # Define Z_N.
   R = IntegerModRing(N);
 
-  # Select g quickly by picking gi from each cyclic subgroup, computing its
-  # order, and composing under the CRT. This avoids exponentiating modulo N.
-  ris = [];
-  gis = [];
-  mds = [];
-
   P = prime_range(Bs + 1);
 
-  for i in range(len(factors)):
-    [pi, ei] = factors[i];
+  while True:
+    # Select g quickly by picking gi from each cyclic subgroup, computing its
+    # order, and composing under the CRT. This avoids exponentiating modulo N.
+    ris = [];
+    gis = [];
+    mds = [];
 
-    print("Processing subgroup " + str(i) + ": " + str(pi) + "^" + str(ei));
+    for i in range(len(factors)):
+      [pi, ei] = factors[i];
 
-    Ri = IntegerModRing(pi^ei);
-    while True:
-      gi = Ri.random_element();
-      if gcd(gi.lift(), pi) == 1:
-        break;
+      print("Processing subgroup " + str(i) + ": " + str(pi) + "^" + str(ei));
 
-    ri = pi^(ei - 1) * (pi - 1);
-
-    ri_base = ri;
-    ri = 1;
-
-    for f in P:
-      while ((ri_base % f) == 0) and (ri_base != 0):
-        ri_base /= f;
-        ri *= f;
-
-    gi_base = gi^ri_base;
-
-    for f in P:
-      while (ri % f) == 0:
-        if gi_base^(ri / f) != 1:
+      Ri = IntegerModRing(pi^ei);
+      while True:
+        gi = Ri.random_element();
+        if gcd(gi.lift(), pi) == 1:
           break;
-        ri /= f;
 
-    ri *= ri_base;
+        # Note: If a non-trivial factor is found "by accident" when sampling g,
+        # we would use it to split N in an actual implementation. We do not do
+        # so here, so as not to complicate the test procedure too much.
 
-    ris.append(ri);
-    gis.append(gi.lift());
-    mds.append(pi^ei);
+      ri = pi^(ei - 1) * (pi - 1);
 
-  g = R(crt(gis, mds)); # map (g1, .., gn) to g in Z_N^*
-  r = lcm(ris); # order of g
+      ri_base = ri;
+      ri = 1;
+
+      for f in P:
+        while ((ri_base % f) == 0) and (ri_base != 0):
+          ri_base /= f;
+          ri *= f;
+
+      gi_base = gi^ri_base;
+
+      for f in P:
+        while (ri % f) == 0:
+          if gi_base^(ri / f) != 1:
+            break;
+          ri /= f;
+
+      ri *= ri_base;
+
+      ris.append(ri);
+      gis.append(gi.lift());
+      mds.append(pi^ei);
+
+    g = R(crt(gis, mds)); # map (g1, .., gn) to g in Z_N^*
+
+    # Optimization: Sample g uniformly at random from Z_N^* \ {1}.
+    #
+    # For details, see "optimizations.md" and Section 3.2.1 of [E21b].
+    if (g == 1) and opt_exclude_one:
+      print("\nNote: Sampled g = 1; excluding and sampling again...\n");
+      continue;
+
+    r = lcm(ris); # order of g
+
+    break;
 
   if sanity_check:
     if g^r != 1:
@@ -161,6 +177,8 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
       opt_abort_early,
     opt_square =
       opt_square,
+    opt_exclude_one =
+      opt_exclude_one,
     opt_process_composite_factors =
       opt_process_composite_factors);
   solve_timer.stop();
@@ -184,6 +202,7 @@ def test_exact_of_random_N(m = 192, c = 1,
   opt_report_accidental_factors = True,
   opt_abort_early = True,
   opt_square = True,
+  opt_exclude_one = True,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
@@ -211,6 +230,11 @@ def test_exact_of_random_N(m = 192, c = 1,
   R = IntegerModRing(N);
   while True:
     g = R.random_element();
+
+    if (g == 1) and opt_exclude_one:
+      print("\nNote: Sampled g = 1; excluding and sampling again...");
+      continue;
+
     if gcd(g.lift(), N) == 1:
       break;
 
@@ -241,6 +265,8 @@ def test_exact_of_random_N(m = 192, c = 1,
       opt_abort_early,
     opt_square =
       opt_square,
+    opt_exclude_one =
+      opt_exclude_one,
     opt_process_composite_factors =
       opt_process_composite_factors);
   solve_timer.stop();
@@ -256,6 +282,7 @@ def test_all_appendix_A(
   opt_report_accidental_factors = True,
   opt_abort_early = True,
   opt_square = True,
+  opt_exclude_one = True,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
@@ -285,6 +312,8 @@ def test_all_appendix_A(
               opt_abort_early,
             opt_square =
               opt_square,
+            opt_exclude_one =
+              opt_exclude_one,
             opt_process_composite_factors =
               opt_process_composite_factors);
 
