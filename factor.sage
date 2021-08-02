@@ -171,6 +171,7 @@ def factor_completely(r, N, c = 1,
   k = None,
   timeout = None,
   opt_split_factors_with_multiplicity = True,
+  opt_report_accidental_factors = True,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
@@ -293,15 +294,39 @@ def factor_completely(r, N, c = 1,
     while True:
       # Sample x uniformly at random from Z_N'^*.
       x = IntegerModRing(Np).random_element();
+      if x == 0:
+        continue; # Not in Z_N'^*, and not a non-trivial factor of N'.
 
       d = gcd(x.lift(), Np);
       if d == 1:
         break; # The element is in Z_N'^*.
 
-      # N.B.: This point is reached when x_j is not in Z_N'^*. In an optimized
-      # implementation we would check if d is non-zero and if so add d to F, but
-      # we avoid doing so here to avoid checking if F is complete and breaking
-      # both in this inner loop and multiple times in the outer loop.
+      # Optimization: Report the non-trivial factor d found "by accident" above.
+      #
+      # For further details, see "optimizations.md".
+      if opt_report_accidental_factors:
+        print("Note: Reporting a factor (" + str(d) + ") found \"by " +
+              "accident\" when sampling. This is likely to occur only if N " +
+              "has small factors.\n");
+
+        # Report the factor.
+        F.add(d);
+
+        # Print status again.
+        F.print_status();
+
+        # Check again if we're done, since we have updated F.
+        if F.is_complete():
+          break;
+
+        if opt_process_composite_factors in \
+          [OptProcessCompositeFactors.JOINTLY_MOD_Np,
+           OptProcessCompositeFactors.SEPARATELY_MOD_Np]:
+          Np = F.residual; # Update to the potentially new N'.
+
+    # Check again if we're done, since we may have updated F above.
+    if F.is_complete():
+      break;
 
     # Optimization: Exponentiate x modulo N', for N' the product of all pairwise
     # coprime composite factors of N stored in the collection, or as N' runs
