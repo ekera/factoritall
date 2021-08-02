@@ -172,6 +172,7 @@ def factor_completely(r, N, c = 1,
   timeout = None,
   opt_split_factors_with_multiplicity = True,
   opt_report_accidental_factors = True,
+  opt_abort_early = True,
   opt_square = True,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
@@ -369,6 +370,15 @@ def factor_completely(r, N, c = 1,
       tmp = xp^o;
       timer_exponentiation.stop();
 
+      # Optimization: Test if tmp = 1, and if so abort early.
+      #
+      # Were we to proceed, we would obtain d = gcd(tmp^{2^i} - 1, Np) = Np in
+      # step 4.2.1, as tmp^{2^i} = 1 for all i, and as gcd(0, Np) = Np.
+      #
+      # For further details, see "optimizations.md" and Section 3.2.1 of [E21b].
+      if (tmp == 1) and opt_abort_early:
+        continue; # No point in continuing with the below procedure.
+
       # Step 4.2.1 for i = 0.
       d = gcd((tmp - 1).lift(), Np);
       if 1 < d < Np:
@@ -386,6 +396,9 @@ def factor_completely(r, N, c = 1,
         else:
           tmp = xp^((2^i) * o);
         timer_exponentiation.stop();
+
+        if (tmp == 1) and opt_abort_early:
+          break; # No point in continuing iterating, see above.
 
         # Step 4.2.1 for i = 1, .., t.
         d = gcd((tmp - 1).lift(), Np);
