@@ -18,7 +18,7 @@ To install [Sage](https://www.sagemath.org) under [Ubuntu 20.04 LTS](https://rel
 ```console
 $ sudo apt install sagemath
 ```
-For other Linux and Unix distributions, or operating systems, you may need to [download Sage](https://www.sagemath.org/download) and install it manually. These scripts were developed for Sage 9.1.
+For other Linux and Unix distributions, or operating systems, you may need to [download Sage](https://www.sagemath.org/download) and install it manually. These scripts were developed for Sage 9.3.
 
 ### Attaching the scripts
 Launch Sage and attach the scripts [<code>factor.sage</code>](factor.sage) and [<code>factor-test.sage</code>](factor-test.sage), by executing:
