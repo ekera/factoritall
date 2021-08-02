@@ -170,6 +170,7 @@ class IncompleteFactorizationException(Exception):
 def factor_completely(r, N, c = 1,
   k = None,
   timeout = None,
+  opt_split_factors_with_multiplicity = True,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
@@ -223,6 +224,23 @@ def factor_completely(r, N, c = 1,
 
   # Define a pairwise coprime set and add in N.
   F = FactorCollection(N);
+
+  # Optimization: Initially split N when factors of N occur with multiplicity.
+  #
+  # If p^e divides N for e > 1, then p^(e-1) is likely to divide r. We may use
+  # this fact to initially split N when prime factors occur with multiplicity.
+  #
+  # Note that splitting N in this way is advantageous, as it can be done without
+  # exponentiating, and as it may speed up the subsequent exponentiations (when
+  # opt_process_composite_factors is not set to JOINTLY_MOD_N).
+  #
+  # For further details, see "optimizations.md" and [GLMS15].
+  if opt_split_factors_with_multiplicity:
+    d = gcd(r, N);
+    if d != 1:
+      print("Note: Splitting N by gcd(r, N) before commencing to iterate...\n");
+
+      F.add(d);
 
   # Step 4: For j = 1, 2, ... up to k where k is unbounded.
   j = 0;
