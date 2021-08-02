@@ -45,3 +45,9 @@ This implementation supports several optimizations that may be enabled or disabl
    Note furthermore that if <img src="https://render.githubusercontent.com/render/math?math=N"> has small factors when this optimization is enabled, and if the <code>opt_process_composite_factors</code> flag is furthermore set to <code>OptProcessCompositeFactors.JOINTLY_MOD_N</code>, then the same non-trivial factor of <img src="https://render.githubusercontent.com/render/math?math=N"> may be repeatedly found by accident when sampling. This may generate long printouts.
 
    Also note that factors that are found "by accident" when sampling <img src="https://render.githubusercontent.com/render/math?math=g"> uniformly at random from <img src="https://render.githubusercontent.com/render/math?math=\mathbb Z_{N}^*"> are not reported even if <code>opt_report_accidental_factors</code> is set to <code>True</code>. This is because such factors, if found in practice, would typically affect for which <img src="https://render.githubusercontent.com/render/math?math=N"> order finding is performed in the first place.
+
+- <code>opt_square</code> to either <code>True</code> (default option) or <code>False</code>
+
+   When set to <code>True</code>, as is the default, the solver first computes <img src="https://render.githubusercontent.com/render/math?math=x^{o}">. It then takes consecutive squares to form <img src="https://render.githubusercontent.com/render/math?math=x^{2^i o}"> for various <img src="https://render.githubusercontent.com/render/math?math=i">. When set to <code>False</code>, the solver naïvely computes <img src="https://render.githubusercontent.com/render/math?math=x^{2^i o}"> from scratch for each <img src="https://render.githubusercontent.com/render/math?math=i">.
+
+   This optimization is described in Section 3.2.1 of [[E21b]](https://doi.org/10.1007/s11128-021-03069-1).

@@ -25,6 +25,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   timeout = None,
   opt_split_factors_with_multiplicity = True,
   opt_report_accidental_factors = True,
+  opt_square = True,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
@@ -155,6 +156,8 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
       opt_split_factors_with_multiplicity,
     opt_report_accidental_factors =
       opt_report_accidental_factors,
+    opt_square =
+      opt_square,
     opt_process_composite_factors =
       opt_process_composite_factors);
   solve_timer.stop();
@@ -176,6 +179,7 @@ def test_exact_of_random_N(m = 192, c = 1,
   return_timing_statistics = False,
   opt_split_factors_with_multiplicity = True,
   opt_report_accidental_factors = True,
+  opt_square = True,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
@@ -229,6 +233,8 @@ def test_exact_of_random_N(m = 192, c = 1,
       opt_split_factors_with_multiplicity,
     opt_report_accidental_factors =
       opt_report_accidental_factors,
+    opt_square =
+      opt_square,
     opt_process_composite_factors =
       opt_process_composite_factors);
   solve_timer.stop();
@@ -242,6 +248,7 @@ def test_all_appendix_A(
   timeout = None,
   opt_split_factors_with_multiplicity = True,
   opt_report_accidental_factors = True,
+  opt_square = True,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
@@ -267,6 +274,8 @@ def test_all_appendix_A(
               opt_split_factors_with_multiplicity,
             opt_report_accidental_factors =
               opt_report_accidental_factors,
+            opt_square =
+              opt_square,
             opt_process_composite_factors =
               opt_process_composite_factors);
 

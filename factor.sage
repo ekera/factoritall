@@ -172,6 +172,7 @@ def factor_completely(r, N, c = 1,
   timeout = None,
   opt_split_factors_with_multiplicity = True,
   opt_report_accidental_factors = True,
+  opt_square = True,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
@@ -374,8 +375,16 @@ def factor_completely(r, N, c = 1,
         F.add(d);
 
       for i in range(1, t + 1):
+        # Optimization: To speed up the arithmetic, we may use a temporary
+        # variable tmp, that we initially set to xp^o and then square
+        # repeatedly, as opposed to computing xp^(2^i o) for each i.
+        #
+        # For more details, see "optimizations.md" and Section 3.2.1 of [E21b].
         timer_exponentiation.start();
-        tmp = tmp^2;
+        if opt_square:
+          tmp = tmp^2;
+        else:
+          tmp = xp^((2^i) * o);
         timer_exponentiation.stop();
 
         # Step 4.2.1 for i = 1, .., t.
