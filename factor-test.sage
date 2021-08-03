@@ -12,13 +12,13 @@ from timer import Timer;
 # ------------------------------------------------------------------------------
 # Tests the implementation of the factoring algorithm.
 
-# This function will first select n >= 2 distinct l bit odd prime numbers pi
-# uniformly at random, and n exponents ei uniformly at random from [1, e_max].
-# It will then compute N = p1^e1 * .. * pn^en, select g uniformly at random from
-# the multiplicative group of the ring of integers modulo N, and heuristically
-# determine the order r of g using the method described in Appendix A of [E21b].
+# This function first selects n >= 2 distinct primes pi from the set of all odd 
+# l bit primes, and n exponents ei uniformly at random from [1, e_max]. It then 
+# computes N = p1^e1 * .. * pn^en, selects g uniformly at random from the 
+# multiplicative group of the ring of integers modulo N, and heuristically
+# determines the order r of g using the method from Appendix A of [E21b].
 #
-# Finally, it will call the solver for r and N passing along the constant c.
+# Finally, it calls the solver for r and N passing along the constant c.
 def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   Bs = 10^6, sanity_check = False, return_timing_statistics = False,
   k = None,
@@ -186,14 +186,14 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   if return_timing_statistics:
     return [setup_timer, solve_timer];
 
-# This function will first select N uniformly at random from the set of all m
-# bit composites, where it is required that m be in [8, 224]. It will then
-# select g uniformly at random from the multiplicative group of the ring of
-# integers modulo N, and compute the order r of g exactly classically by
-# factoring N = p1^e1 * .. * pn^en and then factoring pi - 1 for i in [1, n]
-# using functions native to Sage.
+# This function first selects N uniformly at random from the set of all m bit 
+# composites, where it is required that m be in [8, 224]. It then selects g 
+# uniformly at random from the multiplicative group of the ring of integers 
+# modulo N, and computes the order r of g exactly classically by factoring 
+# N = p1^e1 * .. * pn^en and then factoring pi - 1 for i in [1, n] using 
+# functions native to Sage.
 #
-# Finally, it will call the solver for r and N passing along the constant c.
+# Finally, it calls the solver for r and N passing along the constant c.
 def test_exact_of_random_N(m = 192, c = 1,
   k = None,
   timeout = None,

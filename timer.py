@@ -9,7 +9,7 @@ class Timer:
   # A constant for state management indicating that the timer is running.
   RUNNING = 1;
 
-  # Initializes a timer to a specific time delta, that defaults to zero.
+  # Initializes the timer to a specific time delta, that defaults to zero.
   # The timer is left in the stopped state until manually started.
   def __init__(self, delta_t = 0):
     self.state = Timer.STOPPED;
@@ -46,9 +46,9 @@ class Timer:
 
     return self;
 
-  # Peeks at the a running or stopped timer, returning the number of seconds
-  # elapsed. For a stopped timer, the time delta is returned. For a running
-  # timer, the sum of the time delta and the time offset is returned.
+  # Peeks at the timer, returning the number of seconds elapsed. If the timer is
+  # stopped, the time delta is returned. Otherwise, the sum of the time delta 
+  # and the current offset of the running timer is returned.
   def peek(self):
     tmp_delta_t = self.delta_t;
     if self.state == Timer.RUNNING:
@@ -58,13 +58,14 @@ class Timer:
 
   # Adds the time deltas of two stopped timers, returning a new timer with said
   # time delta. The timer is left in the stopped state until manually started.
+  # If either timer is running, an exception is raised.
   def __add__(a, b):
     if (Timer.STOPPED != a.state) or (Timer.STOPPED != b.state):
       raise Exception("Error: Cannot add running timers.");
 
     return Timer(a.delta_t + b.delta_t);
 
-  # Represents this timer as a string.
+  # Represents the timer as a string.
   def __repr__(self):
     # Get a temporary time delta.
     tmp_delta_t = self.peek();

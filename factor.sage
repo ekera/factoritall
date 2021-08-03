@@ -28,8 +28,8 @@ class OptProcessCompositeFactors:
 
   # Select x uniformly at random from Z_N'^*, for N' the product of all pairwise
   # coprime composite factors of N currently stored in the collection.
-  # Exponentiate x modulo N' to 2^t o, as N' runs over each pairwise coprime
-  # composite factor of N currently stored in the collection.
+  # Exponentiate x modulo N' to 2^t o, as N' runs over the pairwise coprime
+  # composite factors of N currently stored in the collection.
   #
   # This is as above, but with more optimizations from Section 3.2.1 of [E21b].
   SEPARATELY_MOD_Np = 3;
@@ -40,11 +40,11 @@ class FactorCollection:
     # The integer N to be factored.
     self.N = N;
 
-    # A set of the factors found so far, reduced so that all factors in the set
+    # The set of factors found thus far, reduced so that all factors in the set
     # are pairwise coprime to each other. This property is enforced by add().
     self.found_factors = set();
 
-    # A set of found prime factors; a subset of found_factors defined above.
+    # The set of prime factors found thus far; a subset of found_factors.
     self.found_primes = set();
 
     # A timer for measuring the time spent performing primality tests.
@@ -53,8 +53,8 @@ class FactorCollection:
     # A timer for measuring the time spent detecting perfect powers.
     self.timer_test_perfect_power = Timer();
 
-    # Set the residual; the product of the composite pairwise coprime factors in
-    # the collection, or 1 if there are no composite factors in the collection.
+    # The residual; the product of the composite pairwise coprime factors in the
+    # collection, or one if there are no composite factors in the collection.
     self.residual = 1;
 
     # Add N as a factor.
@@ -254,20 +254,20 @@ def factor_completely(r, N, c = 1,
     print("Iteration:", j);
     F.print_status();
 
-    # Check if we're done...
+    # Check if we are done...
     if F.is_complete():
       break;
 
     # Increment j for the next iteration.
     j += 1;
 
-    # Check that j <= k, if k is specified, and if so raise an exception passing
+    # Check if j > k, if k is specified, and if so raise an exception passing
     # along the factors that have been found thus far.
     if (k != None) and (j > k):
       raise IncompleteFactorizationException(
         "Error: The iteration limit has been exceeded.", F.found_factors);
 
-    # Check that the timeout is not exceeded, if specified, and if so raise an
+    # Check if the timeout is exceeded, if specified, and if so raise an
     # exception passing along the factors that have been found thus far.
     if (timeout != None) and (timer.peek() > timeout):
       raise IncompleteFactorizationException(\
@@ -325,7 +325,7 @@ def factor_completely(r, N, c = 1,
         # Print status again.
         F.print_status();
 
-        # Check again if we're done, since we have updated F.
+        # Check again if we are done, since we have updated F.
         if F.is_complete():
           break;
 
@@ -334,7 +334,7 @@ def factor_completely(r, N, c = 1,
            OptProcessCompositeFactors.SEPARATELY_MOD_Np]:
           Np = F.residual; # Update to the potentially new N'.
 
-    # Check again if we're done, since we may have updated F above.
+    # Check again if we are done, since we may have updated F above.
     if F.is_complete():
       break;
 
@@ -367,8 +367,8 @@ def factor_completely(r, N, c = 1,
     # for each composite factor N' processed, any non-trivial factors of N'
     # reported can only split N', as N' is coprime with all other factors of N
     # stored in the collection. This implies that there is no need to go back
-    # and re-examine them factor collection after it has been updated with the
-    # addition of the non-trivial factors reported.
+    # and re-examine the factor collection after it has been updated with the
+    # non-trivial factors reported.
     for Np in factors:
       Rp = IntegerModRing(Np); # Define the subring Z_N'^*.
       xp = Rp(x); # Coerce x to Z_N'^*.
@@ -406,7 +406,7 @@ def factor_completely(r, N, c = 1,
         timer_exponentiation.stop();
 
         if (tmp == 1) and opt_abort_early:
-          break; # No point in continuing iterating, see above.
+          break; # No point in continuing to iterate, see above.
 
         # Step 4.2.1 for i = 1, .., t.
         d = gcd((tmp - 1).lift(), Np);
