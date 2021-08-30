@@ -11,7 +11,7 @@ This implementation supports several optimizations that may be enabled or disabl
 
    - <code>OptProcessCompositeFactors.JOINTLY_MOD_Np</code>
 
-      The solver selects <img src="https://render.githubusercontent.com/render/math?math=x"> uniformly at random from <img src="https://render.githubusercontent.com/render/math?math=\mathbb Z_{N'}^*">.  It then exponentiates <img src="https://render.githubusercontent.com/render/math?math=x"> modulo <img src="https://render.githubusercontent.com/render/math?math={N^{\prime}}">.
+      The solver selects <img src="https://render.githubusercontent.com/render/math?math=x"> uniformly at random from <img src="https://render.githubusercontent.com/render/math?math=\mathbb Z_{N'}^*">. It then exponentiates <img src="https://render.githubusercontent.com/render/math?math=x"> modulo <img src="https://render.githubusercontent.com/render/math?math={N^{\prime}}">.
 
       Above <img src="https://render.githubusercontent.com/render/math?math={N^{\prime}}"> is the product of all pairwise coprime composite factors of <img src="https://render.githubusercontent.com/render/math?math=N"> currently stored in the factor collection.
 

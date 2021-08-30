@@ -47,7 +47,7 @@ class Timer:
     return self;
 
   # Peeks at the timer, returning the number of seconds elapsed. If the timer is
-  # stopped, the time delta is returned. Otherwise, the sum of the time delta 
+  # stopped, the time delta is returned. Otherwise, the sum of the time delta
   # and the current offset of the running timer is returned.
   def peek(self):
     tmp_delta_t = self.delta_t;

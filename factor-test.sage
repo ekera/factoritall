@@ -12,9 +12,9 @@ from timer import Timer;
 # ------------------------------------------------------------------------------
 # Tests the implementation of the factoring algorithm.
 
-# This function first selects n >= 2 distinct primes pi from the set of all odd 
-# l bit primes, and n exponents ei uniformly at random from [1, e_max]. It then 
-# computes N = p1^e1 * .. * pn^en, selects g uniformly at random from the 
+# This function first selects n >= 2 distinct primes pi from the set of all odd
+# l bit primes, and n exponents ei uniformly at random from [1, e_max]. It then
+# computes N = p1^e1 * .. * pn^en, selects g uniformly at random from the
 # multiplicative group of the ring of integers modulo N, and heuristically
 # determines the order r of g using the method from Appendix A of [E21b].
 #
@@ -186,11 +186,11 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   if return_timing_statistics:
     return [setup_timer, solve_timer];
 
-# This function first selects N uniformly at random from the set of all m bit 
-# composites, where it is required that m be in [8, 224]. It then selects g 
-# uniformly at random from the multiplicative group of the ring of integers 
-# modulo N, and computes the order r of g exactly classically by factoring 
-# N = p1^e1 * .. * pn^en and then factoring pi - 1 for i in [1, n] using 
+# This function first selects N uniformly at random from the set of all m bit
+# composites, where it is required that m be in [8, 224]. It then selects g
+# uniformly at random from the multiplicative group of the ring of integers
+# modulo N, and computes the order r of g exactly classically by factoring
+# N = p1^e1 * .. * pn^en and then factoring pi - 1 for i in [1, n] using
 # functions native to Sage.
 #
 # Finally, it calls the solver for r and N passing along the constant c.
