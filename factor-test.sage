@@ -19,6 +19,13 @@ from timer import Timer;
 # determines the order r of g using the method from Appendix A of [E21b].
 #
 # Finally, it calls the solver for r and N passing along the constant c.
+#
+# If you wish, you may specify k and/or a timeout in seconds. If the number of
+# iterations performed by the solver exceeds k, or if the timeout is exceeded, 
+# an exception of type IncompleteFactorizationException will be raised.
+#
+# The remaining arguments are optimization flags. They are documented below in
+# the code, and in "optimizations.md". It is recommended to use the defaults.
 def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   Bs = 10^6, sanity_check = False,
   return_timing_statistics = False,
@@ -195,6 +202,13 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
 # functions native to Sage.
 #
 # Finally, it calls the solver for r and N passing along the constant c.
+#
+# If you wish, you may specify k and/or a timeout in seconds. If the number of
+# iterations performed by the solver exceeds k, or if the timeout is exceeded, 
+# an exception of type IncompleteFactorizationException will be raised.
+#
+# The remaining arguments are optimization flags. They are documented below in
+# the code, and in "optimizations.md". It is recommended to use the defaults.
 def test_exact_of_random_N(m = 192, c = 1,
   return_timing_statistics = False,
   k = None,
@@ -232,6 +246,9 @@ def test_exact_of_random_N(m = 192, c = 1,
   while True:
     g = R.random_element();
 
+    # Optimization: Sample g uniformly at random from Z_N^* \ {1}.
+    #
+    # For details, see "optimizations.md" and Section 3.2.1 of [E21b].
     if (g == 1) and opt_exclude_one:
       print("\nNote: Sampled g = 1; excluding and sampling again...");
       continue;
@@ -276,6 +293,13 @@ def test_exact_of_random_N(m = 192, c = 1,
     return [setup_timer, solve_timer];
 
 # This function executes the test suite described in Appendix A.3 of [E21b].
+#
+# If you wish, you may specify k and/or a timeout in seconds. If the number of
+# iterations performed by the solver exceeds k, or if the timeout is exceeded, 
+# an exception of type IncompleteFactorizationException will be raised.
+#
+# The remaining arguments are optimization flags. They are documented in 
+# "optimizations.md". It is recommended to use the defaults.
 def test_all_appendix_A(
   k = None,
   timeout = None,
