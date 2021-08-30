@@ -208,7 +208,7 @@ def test_exact_of_random_N(m = 192, c = 1,
 
   # Sanity checks.
   if m < 8:
-    raise Exception("Error: Select m > 8.");
+    raise Exception("Error: Select m >= 8.");
 
   if m > 224:
     raise Exception("Error: It may take a long time to factor an m = " +
