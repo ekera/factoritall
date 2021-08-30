@@ -146,7 +146,7 @@ class FactorCollection:
     return str(self.found_factors);
 
 # An exception that is raised to signal an incomplete factorization. This occurs
-# only if an interation or timeout limit has been specified.
+# only if an iteration or timeout limit has been specified.
 class IncompleteFactorizationException(Exception):
   def __init__(self, message, factors):
     super().__init__(message);
@@ -159,7 +159,7 @@ class IncompleteFactorizationException(Exception):
 # be explicitly specified: By default, as many iterations k as are necessary to
 # completely factor N will be performed. The algorithm will then stop.
 #
-# If you wish, you max specify k and/or a timeout in seconds. If the number of
+# If you wish, you may specify k and/or a timeout in seconds. If the number of
 # iterations performed exceeds k, or if the timeout is exceeded, an exception of
 # type IncompleteFactorizationException will be raised.
 #
