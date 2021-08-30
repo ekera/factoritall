@@ -20,7 +20,8 @@ from timer import Timer;
 #
 # Finally, it calls the solver for r and N passing along the constant c.
 def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
-  Bs = 10^6, sanity_check = False, return_timing_statistics = False,
+  Bs = 10^6, sanity_check = False,
+  return_timing_statistics = False,
   k = None,
   timeout = None,
   opt_split_factors_with_multiplicity = True,
@@ -195,9 +196,9 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
 #
 # Finally, it calls the solver for r and N passing along the constant c.
 def test_exact_of_random_N(m = 192, c = 1,
+  return_timing_statistics = False,
   k = None,
   timeout = None,
-  return_timing_statistics = False,
   opt_split_factors_with_multiplicity = True,
   opt_report_accidental_factors = True,
   opt_abort_early = True,
