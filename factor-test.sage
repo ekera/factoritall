@@ -21,7 +21,7 @@ from timer import Timer;
 # Finally, it calls the solver for r and N passing along the constant c.
 #
 # If you wish, you may specify k and/or a timeout in seconds. If the number of
-# iterations performed by the solver exceeds k, or if the timeout is exceeded, 
+# iterations performed by the solver exceeds k, or if the timeout is exceeded,
 # an exception of type IncompleteFactorizationException will be raised.
 #
 # The remaining arguments are optimization flags. They are documented below in
@@ -204,7 +204,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
 # Finally, it calls the solver for r and N passing along the constant c.
 #
 # If you wish, you may specify k and/or a timeout in seconds. If the number of
-# iterations performed by the solver exceeds k, or if the timeout is exceeded, 
+# iterations performed by the solver exceeds k, or if the timeout is exceeded,
 # an exception of type IncompleteFactorizationException will be raised.
 #
 # The remaining arguments are optimization flags. They are documented below in
@@ -295,10 +295,10 @@ def test_exact_of_random_N(m = 192, c = 1,
 # This function executes the test suite described in Appendix A.3 of [E21b].
 #
 # If you wish, you may specify k and/or a timeout in seconds. If the number of
-# iterations performed by the solver exceeds k, or if the timeout is exceeded, 
+# iterations performed by the solver exceeds k, or if the timeout is exceeded,
 # an exception of type IncompleteFactorizationException will be raised.
 #
-# The remaining arguments are optimization flags. They are documented in 
+# The remaining arguments are optimization flags. They are documented in
 # "optimizations.md". It is recommended to use the defaults.
 def test_all_appendix_A(
   k = None,
