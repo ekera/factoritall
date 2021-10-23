@@ -66,7 +66,8 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   # Start a timer.
   setup_timer = Timer().start();
 
-  # Randomly select m distinct prime factors for N of length n bits.
+  # Select n distinct prime factors of length l bits using generate_prime(). For
+  # each prime factor, select an exponent uniformly at random from [1, e_max].
   factors = [];
 
   for i in range(n):
