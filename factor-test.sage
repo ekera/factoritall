@@ -6,6 +6,10 @@
 #                   Quantum Inf. Process. 20(6):205 (2021).
 #
 # Note: You must attach "factor.sage" prior to attaching this file.
+#
+# Note: This implementation assumes that the random_element() function (in the
+# IntegerModRing class that is provided by Sage) is indistinguishable from a
+# function that selects an element uniformly at random from the ring.
 
 from timer import Timer;
 
