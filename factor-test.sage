@@ -40,7 +40,7 @@ from timer import Timer;
 #
 # to sample gi of order ri from the multiplicative group of the ring of integers
 # modulo pi^ei, which is cyclic. This for Gi a generator of said group, and for
-# lambda() the Carmichael function.
+# lambda() the Carmichael function as defined above.
 #
 # Note that it is typically hard to compute gi, and hence g, when using exact
 # mode: It is hard to find an element Gi that we can prove is a generator
