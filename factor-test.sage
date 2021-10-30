@@ -14,11 +14,45 @@ from timer import Timer;
 
 # This function first selects n >= 2 distinct primes pi from the set of all odd
 # l bit primes, and n exponents ei uniformly at random from [1, e_max]. It then
-# computes N = p1^e1 * .. * pn^en, selects g uniformly at random from the
-# multiplicative group of the ring of integers modulo N, and heuristically
-# determines the order r of g using the method from Appendix A of [E21b].
+# computes N = p1^e1 * .. * pn^en.
 #
-# Finally, it calls the solver for r and N passing along the constant c.
+# This function may be run in exact or heuristic mode, as controlled by the
+# exact flag being set to either True or False, respectively:
+#
+# i) In heuristic mode, this function selects g uniformly at random from the
+# multiplicative group of the ring of integers modulo N, and heuristically
+# determines the order r of g using the method in Appendix A of [E21b].
+#
+# More specifically, it selects gi from the multiplicative group of the ring of
+# integers modulo pi^ei for i in [1, n], and heuristically estimates the order
+# ri of gi. This by using that lambda(pi^ei) = (pi - 1) pi^(ei - 1) as pi is
+# odd, and by using a factor base of primes <= Bs to find small factors of
+# pi - 1 via trial division. It then computes g via the Chinese remainder
+# theorem, by using that gi = g mod pi^ei, along with a heuristic estimate
+# lcm(r1, ..., rn) of the order r of g.
+#
+# ii) In exact mode, this function instead samples the orders ri exactly, and
+# then computes r = lcm(r1, ..., rn). To sample ri exactly, this function first
+# samples an index di uniformly at random from [0, lambda(pi^ei)). It then uses
+# that the order ri of the element gi = Gi^di is
+#
+#   ri = lambda(pi^ei) / gcd(lambda(pi^ei), di)
+#
+# to sample gi of order ri from the multiplicative group of the ring of integers
+# modulo pi^ei, which is cyclic. This for Gi a generator of said group, and for
+# lambda() the Carmichael function.
+#
+# Note that it is typically hard to compute gi, and hence g, when using exact
+# mode: It is hard to find an element Gi that we can prove is a generator
+# without factoring pi - 1. However, this is not a problem in our use case, as
+# we seek the order r of g selected uniformly at random from the multiplicative
+# group of the ring of integers modulo N. We do not need to explicitly know g.
+#
+# Hence, it suffices to follow the above procedure to sample di, then ri, and
+# then r. The computation of gi = Gi^di, and of g, may simply be skipped over.
+#
+#
+# Finally, this function calls factor_completely() with r and N passing along c.
 #
 # If you wish, you may specify k and/or a timeout in seconds. If the number of
 # iterations performed by the solver exceeds k, or if the timeout is exceeded,
@@ -26,11 +60,12 @@ from timer import Timer;
 #
 # The remaining arguments are optimization flags. They are documented below in
 # the code, and in "optimizations.md". It is recommended to use the defaults.
-def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
+def test_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   Bs = 10^6, sanity_check = False,
   return_timing_statistics = False,
   k = None,
   timeout = None,
+  exact = True,
   opt_split_factors_with_multiplicity = True,
   opt_report_accidental_factors = True,
   opt_abort_early = True,
@@ -90,79 +125,111 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   # Define Z_N.
   R = IntegerModRing(N);
 
-  P = prime_range(Bs + 1);
+  if exact:
+    # Compute the exact order r of an element g selected uniformly at random
+    # from the multiplicative group of the ring of integers modulo N. This
+    # without explicitly computing g.
 
-  while True:
-    # Select g quickly by picking gi from each cyclic subgroup, computing its
-    # order, and composing under the CRT. This avoids exponentiating modulo N.
-    ris = [];
-    gis = [];
-    mds = [];
+    while True:
+      ris = [];
 
-    for i in range(len(factors)):
-      [pi, ei] = factors[i];
+      for i in range(len(factors)):
+        [pi, ei] = factors[i];
 
-      print("Processing subgroup " + str(i) + ": " + str(pi) + "^" + str(ei));
+        lambdai = (pi - 1) * pi^(ei - 1);
+        di = IntegerModRing(lambdai).random_element().lift();
 
-      Ri = IntegerModRing(pi^ei);
-      while True:
-        gi = Ri.random_element();
-        if gcd(gi.lift(), pi) == 1:
-          break;
+        ris.append(lambdai / gcd(lambdai, di));
 
-        # Note: If a non-trivial factor is found "by accident" when sampling g,
-        # we would use it to split N in an actual implementation. We do not do
-        # so here, so as not to complicate the test procedure too much.
+      r = lcm(ris); # order of g
 
-      ri = pi^(ei - 1) * (pi - 1);
+      # Optimization: Sample g uniformly at random from Z_N^* \ {1}.
+      #
+      # For details, see "optimizations.md" and Section 3.2.1 of [E21b].
+      if (r == 1) and opt_exclude_one:
+        print("\nNote: Sampled g = 1; excluding and sampling again...\n");
+        continue;
 
-      ri_base = ri;
-      ri = 1;
+      break;
 
-      for f in P:
-        while ((ri_base % f) == 0) and (ri_base != 0):
-          ri_base /= f;
-          ri *= f;
+  else:
+    # Select an element g uniformly at random from the multiplicative group of
+    # the ring of integers modulo N. Approximate the order r of g heuristically.
 
-      gi_base = gi^ri_base;
+    P = prime_range(Bs + 1);
 
-      for f in P:
-        while (ri % f) == 0:
-          if gi_base^(ri / f) != 1:
+    while True:
+      # Select g quickly by picking gi from each cyclic subgroup, computing its
+      # order, and composing under the CRT. This avoids exponentiating modulo N.
+      ris = [];
+      gis = [];
+      mds = [];
+
+      for i in range(len(factors)):
+        [pi, ei] = factors[i];
+
+        print("Processing subgroup " + str(i) + ": " + str(pi) + "^" + str(ei));
+
+        Ri = IntegerModRing(pi^ei);
+        while True:
+          gi = Ri.random_element();
+          if gcd(gi.lift(), pi) == 1:
             break;
-          ri /= f;
 
-      ri *= ri_base;
+          # Note: If a non-trivial factor is found "by accident" when sampling
+          # g, we would use it to split N in an actual implementation. We do not
+          # do so here, so as not to complicate the test procedure too much.
 
-      ris.append(ri);
-      gis.append(gi.lift());
-      mds.append(pi^ei);
+        ri = pi^(ei - 1) * (pi - 1);
 
-    g = R(crt(gis, mds)); # map (g1, .., gn) to g in Z_N^*
+        ri_base = ri;
+        ri = 1;
 
-    # Optimization: Sample g uniformly at random from Z_N^* \ {1}.
-    #
-    # For details, see "optimizations.md" and Section 3.2.1 of [E21b].
-    if (g == 1) and opt_exclude_one:
-      print("\nNote: Sampled g = 1; excluding and sampling again...\n");
-      continue;
+        for f in P:
+          while (ri_base % f) == 0:
+            ri_base /= f;
+            ri *= f;
 
-    r = lcm(ris); # order of g
+        gi_base = gi^ri_base;
 
-    break;
+        for f in P:
+          while (ri % f) == 0:
+            if gi_base^(ri / f) != 1:
+              break;
+            ri /= f;
 
-  if sanity_check:
-    if g^r != 1:
-      raise Exception("Error: The order is incorrectly approximated.");
+        ri *= ri_base;
 
-    for f in P:
-      if r % f == 0:
-        if g^(r / f) == 1:
-          raise Exception("Error: The order is incorrectly approximated.");
+        ris.append(ri);
+        gis.append(gi.lift());
+        mds.append(pi^ei);
+
+      g = R(crt(gis, mds)); # map (g1, .., gn) to g in Z_N^*
+
+      # Optimization: Sample g uniformly at random from Z_N^* \ {1}.
+      #
+      # For details, see "optimizations.md" and Section 3.2.1 of [E21b].
+      if (g == 1) and opt_exclude_one:
+        print("\nNote: Sampled g = 1; excluding and sampling again...\n");
+        continue;
+
+      r = lcm(ris); # order of g
+
+      break;
+
+    if sanity_check:
+      if g^r != 1:
+        raise Exception("Error: The order is incorrectly approximated.");
+
+      for f in P:
+        if r % f == 0:
+          if g^(r / f) == 1:
+            raise Exception("Error: The order is incorrectly approximated.");
+
+    print("\nSelected g = " + str(g));
 
   r_max = lcm([p^(e-1) * (p-1) for [p, e] in factors]);
 
-  print("\nSelected g = " + str(g));
   print("\nThe order of g is approximated as r =", r);
   print("\nThe maximal order is lambda(N) =", r_max);
   print("\nThe fraction lambda(N) / r = " + str(factor(r_max / r)) + "\n");
@@ -202,7 +269,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
 # N = p1^e1 * .. * pn^en and then factoring pi - 1 for i in [1, n] using
 # functions native to Sage.
 #
-# Finally, it calls the solver for r and N passing along the constant c.
+# Finally, this function calls factor_completely() with r and N passing along c.
 #
 # If you wish, you may specify k and/or a timeout in seconds. If the number of
 # iterations performed by the solver exceeds k, or if the timeout is exceeded,
@@ -210,7 +277,7 @@ def test_heuristic_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
 #
 # The remaining arguments are optimization flags. They are documented below in
 # the code, and in "optimizations.md". It is recommended to use the defaults.
-def test_exact_of_random_N(m = 192, c = 1,
+def test_of_random_N(m = 192, c = 1,
   return_timing_statistics = False,
   k = None,
   timeout = None,
@@ -304,6 +371,7 @@ def test_exact_of_random_N(m = 192, c = 1,
 def test_all_appendix_A(
   k = None,
   timeout = None,
+  exact = True,
   opt_split_factors_with_multiplicity = True,
   opt_report_accidental_factors = True,
   opt_abort_early = True,
@@ -326,10 +394,11 @@ def test_all_appendix_A(
           ", e_max =", str(e_max) + "...\n");
 
         [setup_timer, solve_timer] = \
-          test_heuristic_of_random_pi_ei(l, n, e_max,
+          test_of_random_pi_ei(l, n, e_max,
             return_timing_statistics = True,
             k = k,
             timeout = timeout,
+            exact = exact,
             opt_split_factors_with_multiplicity =
               opt_split_factors_with_multiplicity,
             opt_report_accidental_factors =
