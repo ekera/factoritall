@@ -180,7 +180,7 @@ def test_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
           # g, we would use it to split N in an actual implementation. We do not
           # do so here, so as not to complicate the test procedure too much.
 
-        ri = pi^(ei - 1) * (pi - 1);
+        ri = (pi - 1) * pi^(ei - 1);
 
         ri_base = ri;
         ri = 1;
