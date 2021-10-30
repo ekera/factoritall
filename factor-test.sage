@@ -230,7 +230,11 @@ def test_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
 
   r_max = lcm([p^(e - 1) * (p - 1) for [p, e] in factors]);
 
-  print("\nThe order of g is approximated as r =", r);
+  if exact:
+    print("The order of g is r =", r);
+  else:
+    print("\nThe order of g is approximated as r =", r);
+
   print("\nThe maximal order is lambda(N) =", r_max);
   print("\nThe fraction lambda(N) / r = " + str(factor(r_max / r)) + "\n");
 
