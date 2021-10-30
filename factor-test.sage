@@ -74,12 +74,12 @@ def test_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
   opt_process_composite_factors =
     OptProcessCompositeFactors.SEPARATELY_MOD_Np):
 
-  # Function to select an odd prime uniformly at random from [2^(l-1), 2^l).
+  # Function to select an odd prime uniformly at random from [2^(l - 1), 2^l).
   def generate_prime(l):
-    R = IntegerModRing(2^(l-1));
+    R = IntegerModRing(2^(l - 1));
 
     while True:
-      p = 2^(l-1) + ZZ(R.random_element().lift());
+      p = 2^(l - 1) + ZZ(R.random_element().lift());
       if (p % 2) == 0:
         continue; # Explicitly exclude 2. Only relevant when l = 2.
       if p.is_prime(proof = False):
@@ -91,7 +91,7 @@ def test_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
       "n >= 2, e_max >= 1, c >= 1, l > 0 and Bs >= 10^3.");
 
   if l <= 24:
-    count = prime_pi(2^l - 1) - prime_pi(2^(l-1) - 1);
+    count = prime_pi(2^l - 1) - prime_pi(2^(l - 1) - 1);
     if l == 2:
       count -= 1; # Explicitly exclude 2. Only relevant when l = 2.
     if n > count:
@@ -228,7 +228,7 @@ def test_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
 
     print("\nSelected g = " + str(g));
 
-  r_max = lcm([p^(e-1) * (p-1) for [p, e] in factors]);
+  r_max = lcm([p^(e - 1) * (p - 1) for [p, e] in factors]);
 
   print("\nThe order of g is approximated as r =", r);
   print("\nThe maximal order is lambda(N) =", r_max);
@@ -301,9 +301,9 @@ def test_of_random_N(m = 192, c = 1,
   setup_timer = Timer().start();
 
   # Pick an m bit composite integer N uniformly at random.
-  R = IntegerModRing(2^(m-1));
+  R = IntegerModRing(2^(m - 1));
   while True:
-    N = R.random_element().lift() + 2^(m-1);
+    N = R.random_element().lift() + 2^(m - 1);
     if not N.is_prime(proof = False):
       break;
 

@@ -231,7 +231,7 @@ def factor_completely(r, N, c = 1,
 
   # Optimization: Initially split N when factors of N occur with multiplicity.
   #
-  # If p^e divides N for e > 1, then p^(e-1) is likely to divide r. We may use
+  # If p^e divides N for e > 1, then p^(e - 1) is likely to divide r. We may use
   # this fact to initially split N when prime factors occur with multiplicity.
   #
   # Note that splitting N in this way is advantageous, as it can be done without
