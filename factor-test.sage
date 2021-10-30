@@ -228,7 +228,7 @@ def test_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
 
     print("\nSelected g = " + str(g));
 
-  r_max = lcm([p^(e - 1) * (p - 1) for [p, e] in factors]);
+  r_max = lcm([(p - 1) * p^(e - 1) for [p, e] in factors]);
 
   if exact:
     print("The order of g is r =", r);
