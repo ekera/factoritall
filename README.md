@@ -80,7 +80,7 @@ It will then compute <img src="https://render.githubusercontent.com/render/math?
 
 - If <code>exact</code> is set to <code>False</code>, this function will first select <img src="https://render.githubusercontent.com/render/math?math=\color{brown}g"> uniformly at random from <img src="https://render.githubusercontent.com/render/math?math=\color{brown}\mathbb Z_N^*">. It will then heuristically determine the order <img src="https://render.githubusercontent.com/render/math?math=\color{brown}r"> of <img src="https://render.githubusercontent.com/render/math?math=\color{brown}g"> using the first type of simulator [described above](#simulating-order-finding).
 
-- If <code>exact</code> is set to <code>True</code>, as is the default, this function will exactly compute the order <img src="https://render.githubusercontent.com/render/math?math=\color{brown}r"> of an element <img src="https://render.githubusercontent.com/render/math?math=\color{brown}g"> uniformly at random from <img src="https://render.githubusercontent.com/render/math?math=\color{brown}\mathbb Z_N^*">, using the second type of simulator [described above](#simulating-order-finding).
+- If <code>exact</code> is set to <code>True</code>, as is the default, this function will exactly compute the order <img src="https://render.githubusercontent.com/render/math?math=\color{brown}r"> of an element <img src="https://render.githubusercontent.com/render/math?math=\color{brown}g"> selected uniformly at random from <img src="https://render.githubusercontent.com/render/math?math=\color{brown}\mathbb Z_N^*">, using the second type of simulator [described above](#simulating-order-finding).
 
    This without explicitly computing <img src="https://render.githubusercontent.com/render/math?math=\color{brown}g">. (Note that <img src="https://render.githubusercontent.com/render/math?math=\color{brown}g"> is not used by the factoring algorithm in [[E21b]](https://doi.org/10.1007/s11128-021-03069-1).)
 
@@ -105,6 +105,6 @@ For further details on the <code>exact</code> flag, see the [documentation](#exa
 This implementation supports several optimizations that may be enabled or disabled by passing along flags to the functions described in the above sections. For more information, see the [notes on optimizations](optimizations.md).
 
 ## About and acknowledgments
-This script was developed by [Martin Ekerå](mailto:ekera@kth.se), in part at [KTH, the Royal Institute of Technology](https://www.kth.se/en), in Stockholm, [Sweden](https://www.sweden.se). Valuable comments and advice were provided by Johan Håstad throughout the development process.
+These scripts were developed by [Martin Ekerå](mailto:ekera@kth.se), in part at [KTH, the Royal Institute of Technology](https://www.kth.se/en), in Stockholm, [Sweden](https://www.sweden.se). Valuable comments and advice were provided by Johan Håstad throughout the development process.
 
 Funding and support was provided by the Swedish NCSA that is a part of the [Swedish Armed Forces](https://www.mil.se).
