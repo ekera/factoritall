@@ -41,7 +41,7 @@ Above $r$ is the order of an element $g$ selected uniformly at random from $\mat
 
 As is explained in [[E21b]](https://doi.org/10.1007/s11128-021-03069-1), by increasing $c$ the success probability of the algorithm can be increased at the expense of also increasing the runtime. In virtually all cases, it is however more than sufficient to let $c = 1$.
 
-To better understand why, recall from [[E21b]](https://doi.org/10.1007/s11128-021-03069-1) that if some moderate product of small prime factors is missing from the order $r$ input compared to $\lambda'(N)$, the complete factorization will be recovered anyhow by iterating. If a <i>single</i> large prime factor is missing, it still does not matter, for the complete factorization will be found anyhow via $N$. It is only if <i>two</i> large prime factors are missing simultaneously, and if these two factors are associated with different prime factors $p_i$ of $N = \prod_{i = 1}^n p_i^{e_i}$, that the complete factorization of $N$ will not be recovered. This is very unlikely to occur in practice, even if some $p_i - 1$ are smooth.
+To better understand why, recall from [[E21b]](https://doi.org/10.1007/s11128-021-03069-1) that if some moderate product of small prime factors is missing from the order $r$ input compared to $\lambda'(N)$, the complete factorization will be recovered anyhow by iterating. If a <i>single</i> large prime factor is missing, it still does not matter, for the complete factorization will be found anyhow via $N$. It is only if <i>two</i> large prime factors are missing simultaneously, and if these two factors are associated with different prime factors $p_i$ of $N = {\prod}_{i = 1}^n p_i^{e_i}$, that the complete factorization of $N$ will not be recovered. This is very unlikely to occur in practice, even if some $p_i - 1$ are smooth.
 
 Note furthermore that by default the function will continue to iterate until the complete factorization is found, or until Ctrl-C is pressed. The constant $k$ in [[E21b]](https://doi.org/10.1007/s11128-021-03069-1), that controls the number of iterations, need therefore not be specified. If you wish, you may explicitly set $k$, or a timeout in seconds, or both, in which case an exception will be raised if either limit specified is exceeded.
 
@@ -50,7 +50,7 @@ The [<code>factor-test.sage</code>](factor-test.sage) script implements two type
 
 - Given the factorization of $N$, and an element $g \in \mathbb Z_N^*$, the first type of order-finding simulator yields either the order $r$ of $g$, or a heuristic approximation of $r$ that is correct with very high probability.
 
-   To be more specific: If the factorization of $p_i - 1$ is known for all $i \in [1, n]$, where $N = \prod_{i = 1}^n p_i^{e_i}$, order finding can be performed exactly. Otherwise, a heuristic approximation can be computed by performing trial division to identify all small factors of $p_i - 1$ for $i \in [1, n]$. For further details, see Appendix A of [[E21b]](https://doi.org/10.1007/s11128-021-03069-1).
+   To be more specific: If the factorization of $p_i - 1$ is known for all $i \in [1, n]$, where $N = {\prod}_{i = 1}^n p_i^{e_i}$, order finding can be performed exactly. Otherwise, a heuristic approximation can be computed by performing trial division to identify all small factors of $p_i - 1$ for $i \in [1, n]$. For further details, see Appendix A of [[E21b]](https://doi.org/10.1007/s11128-021-03069-1).
 
 - Given the factorization of $N$, the second type of order-finding simulator yields the order $r$ of an element $g$ selected uniformly at random from $\mathbb Z_N^*$. This without explicitly computing $g$.
 
@@ -75,7 +75,7 @@ sage: test_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1, exact = True)
 ```
 
 This function will first select $n \ge 2$ distinct primes $p_i$ uniformly at random from the set of all odd $\ell$ bit primes, and $n$ exponents $e_i$ uniformly at random from $[1, e_{\max}]$.
-It will then compute $N = \prod_{i=1}^n p_i^{e_i}$.
+It will then compute $N = {\prod}_{i=1}^n p_i^{e_i}$.
 
 - If <code>exact</code> is set to <code>False</code>, this function will first select $g$ uniformly at random from $\mathbb Z_N^*$. It will then heuristically determine the order $r$ of $g$ using the first type of simulator [described above](#simulating-order-finding).
 
