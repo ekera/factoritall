@@ -60,7 +60,7 @@ This implementation supports several optimizations that may be enabled or disabl
 
 - <code>opt_exclude_one</code> to either <code>True</code> (default option) or <code>False</code>
 
-   When set to <code>False</code>, the solver selects $g$ and $x$ (denoted $x_j$ in [[E21b]](https://doi.org/10.1007/s11128-021-03069-1)) uniformly at random from $\mathbb Z_N^*$ and $\mathbb Z_{N'}^*$, respectively, for $N^\prime$ equal to $N$, or to the product of all pairwise coprime composite factors of $N$ in the factor collection, depending on which option is selected for the <code>opt_process_composite_factors</code> flag.
-   When set to <code>True</code>, as is the default, the solver excludes one by instead selecting $g$ and $x$ uniformly at random from $\mathbb Z_{N}^* \backslash \{ 1 \}$ and $\mathbb Z_{N'}^* \backslash \{ 1 \}$, respectively.
+   When set to <code>False</code>, the solver selects $g$ and $x$ (denoted $x_j$ in [[E21b]](https://doi.org/10.1007/s11128-021-03069-1)) uniformly at random from $`\mathbb Z_N^*`$ and $`\mathbb Z_{N'}^*`$, respectively, for $N^\prime$ equal to $N$, or to the product of all pairwise coprime composite factors of $N$ in the factor collection, depending on which option is selected for the <code>opt_process_composite_factors</code> flag.
+   When set to <code>True</code>, as is the default, the solver excludes one by instead selecting $g$ and $x$ uniformly at random from $`\mathbb Z_{N}^* \backslash \{ 1 \}`$ and $`\mathbb Z_{N'}^* \backslash \{ 1 \}`$, respectively.
 
    This optimization is described in Section 3.2.1 of [[E21b]](https://doi.org/10.1007/s11128-021-03069-1).
