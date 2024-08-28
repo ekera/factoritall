@@ -1,4 +1,4 @@
-# On completely factoring any integer efficiently in a single run of an order-finding algorithm
+# The Factoritall collection of Sage scripts
 From the abstract of [[E21b]](https://doi.org/10.1007/s11128-021-03069-1): "We show that given the order of a single element selected uniformly at random from $\mathbb Z_N^*$, we can with very high probability, and for any integer $N$, efficiently find the complete factorization of $N$ in polynomial time.
 This implies that a single run of the quantum part of Shor's factoring algorithm is usually sufficient.
 All prime factors of $N$ can then be recovered with negligible computational cost in a classical post-processing step.
