@@ -100,7 +100,7 @@ def test_of_random_pi_ei(l = 1024, n = 2, e_max = 1, c = 1,
       count -= 1; # Explicitly exclude 2. Only relevant when l = 2.
     if n > count:
       raise Exception("Error: Incorrect parameters: Ran out of primes: "
-        "There are less than " + str(n) + " odd l bit primes.");
+        "There are fewer than " + str(n) + " odd l bit primes.");
 
   # Start a timer.
   setup_timer = Timer().start();

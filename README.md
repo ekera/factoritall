@@ -52,7 +52,7 @@ The [<code>factor-test.sage</code>](factor-test.sage) script implements two type
 
    To be more specific: If the factorization of $p_i - 1$ is known for all $i \in [1, n]$, where $N = {\prod}_{i = 1}^n p_i^{e_i}$, order finding can be performed exactly. Otherwise, a heuristic approximation can be computed by performing trial division to identify all small factors of $p_i - 1$ for $i \in [1, n]$. For further details, see Appendix A of [[E21b]](https://doi.org/10.1007/s11128-021-03069-1).
 
-- Given the factorization of $N$, the second type of order-finding simulator yields the order $r$ of an element $g$ selected uniformly at random from $\mathbb Z_N^*$. This without explicitly computing $g$.
+- Given the factorization of $N$, the second type of order-finding simulator yields the order $r$ of an element $g$ selected uniformly at random from $\mathbb Z_N^*$, without explicitly computing $g$.
 
    This approach to simulating order finding is not described in [[E21b]](https://doi.org/10.1007/s11128-021-03069-1). For further details, see instead the documentation of the <code>test_of_random_pi_ei()</code> function in the [<code>factor-test.sage</code>](factor-test.sage) script.
 
@@ -81,7 +81,7 @@ It will then compute $N = {\prod}_{i=1}^n p_i^{e_i}$.
 
 - If <code>exact</code> is set to <code>True</code>, as is the default, this function will exactly compute the order $r$ of an element $g$ selected uniformly at random from $\mathbb Z_N^*$, using the second type of simulator [described above](#simulating-order-finding).
 
-   This without explicitly computing $g$. (Note that $g$ is not used by the factoring algorithm in [[E21b]](https://doi.org/10.1007/s11128-021-03069-1).)
+   This is done without explicitly computing $g$. (Note that $g$ is not used by the factoring algorithm in [[E21b]](https://doi.org/10.1007/s11128-021-03069-1).)
 
 Finally, this function will call <code>factor_completely()</code> with $r$ and $N$ passing along the constant $c$.
 

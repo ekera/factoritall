@@ -344,7 +344,7 @@ def factor_completely(r, N, c = 1,
 
     # Optimization: Exponentiate x modulo N', for N' the product of all pairwise
     # coprime composite factors of N stored in the collection, or as N' runs
-    # over the pairwise coprime composite factor of N stored in the collection.
+    # over the pairwise coprime composite factors of N stored in the collection.
     # This as opposed to exponentiating x modulo N', for N' = N, when not
     # applying the optimization.
     #
@@ -360,12 +360,12 @@ def factor_completely(r, N, c = 1,
       # Note: For JOINTLY_MOD_N we have N' = N (where we recall that N' is
       # denoted Np in the code). For JOINTLY_MOD_Np, we have that N' is the
       # product of all pairwise coprime composite factors of N stored in the
-      # collection. (Note: This by the manner in which N' was setup above.)
+      # collection. (Note: This by the manner in which N' was defined above.)
       factors = set([Np]);
     else:
       raise Exception("Error: Invalid option: opt_process_composite_factors.");
 
-    # Exponentiate x for each factor in the set setup above.
+    # Exponentiate x for each factor in the set defined above.
     #
     # Note that when opt_process_composite_factors is set to SEPARATELY_MOD_Np,
     # for each composite factor N' processed, any non-trivial factors of N'
